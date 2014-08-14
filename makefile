@@ -13,4 +13,4 @@ large-u-int.o: large-u-int.c large-u-int.h
 	gcc -c large-u-int.c
 
 clean:
-	rm *.o large-u-int-test
+	rm *.o large-u-int-test resumable-prime-finder
