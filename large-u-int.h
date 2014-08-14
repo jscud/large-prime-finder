@@ -20,12 +20,11 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#define K_MAX_NUM_LARGE_U_INT_BYTES 30
-extern const int kMaxNumLargeUIntBytes;
+#define MAX_NUM_LARGE_U_INT_BYTES 30
 
 typedef struct {
   int num_bytes_;
-  uint8_t bytes_[K_MAX_NUM_LARGE_U_INT_BYTES];
+  uint8_t bytes_[MAX_NUM_LARGE_U_INT_BYTES];
 } LargeUInt;
 
 // The human readable format for large ints is in the following form: The
