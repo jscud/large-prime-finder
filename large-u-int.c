@@ -135,3 +135,34 @@ void LargeUIntRead(FILE* in, LargeUInt* this) {
   }
 }
 
+void LargeUIntInit(int starting_size, LargeUInt* this) {
+  if (starting_size < 0 || starting_size > MAX_NUM_LARGE_U_INT_BYTES) {
+    ErrorOut("Invalis size when initializing a large integer");
+  }
+  this->num_bytes_ = starting_size;
+}
+
+int LargeUIntBufferSize(const LargeUInt* this) {
+  return 5 + 2 * this->num_bytes_;
+}
+
+void LargeUIntSetByte(int value, int index, LargeUInt* this) {
+  if (index < 0 || index >= this->num_bytes_) {
+    ErrorOut("Index out of bounds when setting byte");
+  }
+  if (value < 0 || value > 255) {
+    ErrorOut("Invalid value when setting byte");
+  }
+  this->bytes_[index] = value;
+}
+
+int LargeUIntGetByte(int index, const LargeUInt* this) {
+  if (index < 0 || index >= this->num_bytes_) {
+    ErrorOut("Index out of bounds when getting byte");
+  }
+  return this->bytes_[index];
+}
+
+int LargeUIntNumBytes(const LargeUInt* this) {
+  return this->num_bytes_;
+}

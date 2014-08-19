@@ -40,4 +40,28 @@ void LargeUIntPrint(const LargeUInt* this, FILE* out);
 // the provided LargeUInt.
 void LargeUIntRead(FILE* in, LargeUInt* this);
 
+// Provides the number of characters required for the text representation
+// of this large unsigned integer.
+int LargeUIntBufferSize(const LargeUInt* this);
+
+void LargeUIntStore(const LargeUInt* this, int buffer_size, char* buffer);
+
+void LargeUIntLoad(int buffer_size, char* buffer, const LargeUInt* this);
+
+// Initializes the large unsigned integer to be ready to store a value.
+void LargeUIntInit(int starting_size, LargeUInt* this);
+
+// Increases available size in the large unisigned integer's internal storage.
+void LargeUIntGrow(LargeUInt* this);
+
+// Sets the byte at index to the provided value if the index is in range and
+// the value will fit into an unsigned byte.
+void LargeUIntSetByte(int value, int index, LargeUInt* this);
+
+// Retrieves one byte from within the large unsigned integer.
+int LargeUIntGetByte(int index, const LargeUInt* this);
+
+// Reports the number of bytes currently in the large unsiged integer.
+int LargeUIntNumBytes(const LargeUInt* this);
+
 #endif

@@ -16,22 +16,22 @@
 
 #include "large-u-int.h"
 #include <stdio.h>
+#include <stdlib.h>
+
+void Check(int condition, char* message) {
+  if (!condition) {
+    fprintf(stderr, "Condition failed: %s\n", message);
+    exit(1);
+  }
+}
+
+void TestGetSetAndNumBytes() {
+  LargeUInt num;
+  LargeUIntInit(3, &num);
+  Check(3 == LargeUIntNumBytes(&num), "Num should be 3 bytes long.");
+}
 
 int main(void) {
-  LargeUInt example;
-  example.num_bytes_ = 1;
-  example.bytes_[0] = 5;
-  LargeUIntPrint(&example, stdout);
-  printf("\n");
-  FILE* f = fopen("example", "r");
-  LargeUIntRead(f, &example);
-  LargeUIntPrint(&example, stdout);
-  printf("\n");
-  LargeUIntRead(f, &example);
-  LargeUIntPrint(&example, stdout);
-  printf("\n");
-  LargeUIntRead(f, &example);
-  LargeUIntPrint(&example, stdout);
-  printf("\n");
-  fclose(f);
+  TestGetSetAndNumBytes();
+  printf("All tests passed\n");
 }
