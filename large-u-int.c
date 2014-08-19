@@ -51,86 +51,87 @@ void LargeUIntPrint(const LargeUInt* this, FILE* out) {
   }
 }
 
+// Processes one input character to set the value of this. Returns 1 to
+// continue parsing the 0 when we've reached the end of this large unsigned
+// integer. The starting state is -1.
+static int ParseCharacter(int current, LargeUInt* this, int* state) {
+  printf("Current char: %c this->num_bytes: %i\n", current, this->num_bytes_);
+  if (current == '#') {
+    *state = -6;  // skip comment state
+    return 1;
+  }
+
+  if (*state == -6) {
+    // Comments end with a newline character.
+    if (current == '\n') {
+      *state = -1;
+    }
+    return 1;
+  }
+
+  if (*state == -5) {  // Looking for the _ between num_bytes and byte values.
+    if (current == '_') {
+      *state = 0;  // Start looking for a byte's value.
+    }
+    return 1;
+  }
+
+  int current_value = HexCharToNibble(current);
+  if (current_value == -1) {
+    // Skip over non hex characters.
+    return 1;
+  }
+
+  switch (*state) {
+    case -1:  // Looking for char 1 of 4 in num_bytes.
+      this->num_bytes_ = current_value << 4;
+      *state = -2;
+      return 1;
+    case -2:  // Looking for char 2 of 4 in num_bytes.
+      this->num_bytes_ += current_value;
+      *state = -3;
+      return 1;
+    case -3:  // Looking for char 3 of 4 in num_bytes.
+      this->num_bytes_ += current_value << 12;
+      *state = -4;
+      return 1;
+    case -4:  // Looking for char 4 of 4 in num_bytes.
+      this->num_bytes_ += current_value << 8;
+      *state = -5;  // Reached the end of num_bytes.
+      return 1;
+  }
+
+  if (*state % 2 == 0) {
+    this->bytes_[*state / 2] = current_value << 4;
+    (*state)++;  // Has read the upper nibble of the byte.
+  } else {
+    this->bytes_[(*state - 1) / 2] += current_value;
+    (*state)++;
+    if ((*state / 2) >= this->num_bytes_) {
+      return 0;
+    } 
+  }
+  return 1;
+}
+
 void LargeUIntRead(FILE* in, LargeUInt* this) {
   if (in == NULL) {
     ErrorOut("Invalid file, unable to read LargeUInt.\n");
   }
 
   int current = fgetc(in);
-  int state = 0;  // start state
-  int num_bytes = 0;
-  int byte_index = 0;
-  int current_value = -1;
-  int byte_value = 0;
-  this->num_bytes_ = 0;
+  int state = -1;  // start state
+  this->num_bytes_ = 0; 
+
   while (1) {
     if (feof(in)) {
       break;
     }
-
-    if (current == '#') {
-      state = 7;  // skip comment state
+    
+    if (ParseCharacter(current, this, &state) == 0) {
+      return;
     }
 
-    if (state == 7) {
-      // Comments end with a newline character.
-      if (current == '\n') {
-        state = 0;
-      }
-      current = fgetc(in);
-      continue;
-    }
-
-    if (state == 4) {  // Looking for the _ between num_bytes and byte values.
-      if (current == '_') {
-        state = 5;  // Start looking for a byte's value.
-      }
-      current = fgetc(in);
-      continue;
-    }
-
-    current_value = HexCharToNibble(current);
-    if (current_value == -1) {
-      // Skip over non hex characters.
-      current = fgetc(in);
-      continue;
-    }
-
-    switch (state) {
-      case 0:  // Looking for char 1 of 4 in num_bytes.
-        num_bytes = current_value << 4;
-        state = 1;
-        break;
-      case 1:  // Looking for char 2 of 4 in num_bytes.
-        num_bytes += current_value;
-        state = 2;
-        break;
-      case 2:  // Looking for char 3 of 4 in num_bytes.
-        num_bytes += current_value << 12;
-        state = 3;
-        break;
-      case 3:  // Looking for char 4 of 4 in num_bytes.
-        num_bytes += current_value << 8;
-        state = 4;  // Reached the end of num_bytes.
-        byte_index = 0;
-        this->num_bytes_ = num_bytes;
-        break;
-      case 5:
-        this->bytes_[byte_index] = current_value << 4;
-        state = 6;  // Has read the upper nibble of the byte.
-        break;
-      case 6:
-        this->bytes_[byte_index] += current_value;
-        byte_index++;
-        if (byte_index < num_bytes) {
-          state = 5;
-        } else {
-          return;
-        }
-        break;
-      case 7:
-        break;
-    }
     current = fgetc(in);
   }
 }
