@@ -29,6 +29,12 @@ void TestGetSetAndNumBytes() {
   LargeUInt num;
   LargeUIntInit(3, &num);
   Check(3 == LargeUIntNumBytes(&num), "Num should be 3 bytes long.");
+  LargeUIntSetByte(255, 0, &num);
+  LargeUIntSetByte(1, 1, &num);
+  LargeUIntSetByte(76, 2, &num);
+  Check(255 == LargeUIntGetByte(0, &num), "Num byte 0 should be 255");
+  Check(1 == LargeUIntGetByte(1, &num), "Num byte 0 should be 1");
+  Check(76 == LargeUIntGetByte(2, &num), "Num byte 0 should be 76");
 }
 
 int main(void) {
