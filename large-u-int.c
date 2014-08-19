@@ -16,8 +16,27 @@
 
 #include "large-u-int.h"
 
+#include <stdlib.h>
+#include <stdio.h>
+
 static const char kHexBytes[] = {'0', '1', '2', '3', '4', '5', '6', '7',
                                  '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+
+// Exits the program after sending the message to stderr.
+static void ErrorOut(char* message) {
+  fprintf(stderr, message);
+  exit(1);
+}
+
+static int HexCharToNibble(char hex_char) {
+  if (hex_char >= '0' && hex_char <= '9') {
+    return hex_char - '0';
+  } else if (hex_char >= 'A' && hex_char <= 'F') {
+    return hex_char + 10 - 'A';
+  } else {
+    return -1;
+  }
+}
 
 void LargeUIntPrint(const LargeUInt* this, FILE* out) {
   int i;
@@ -29,6 +48,90 @@ void LargeUIntPrint(const LargeUInt* this, FILE* out) {
   for (i = 0; i < this->num_bytes_; i++) {
     fprintf(out, "%c%c", kHexBytes[this->bytes_[i] >> 4 & 0x0F],
             kHexBytes[this->bytes_[i] & 0x0F]);
+  }
+}
+
+void LargeUIntRead(FILE* in, LargeUInt* this) {
+  if (in == NULL) {
+    ErrorOut("Invalid file, unable to read LargeUInt.\n");
+  }
+
+  int current = fgetc(in);
+  int state = 0;  // start state
+  int num_bytes = 0;
+  int byte_index = 0;
+  int current_value = -1;
+  int byte_value = 0;
+  this->num_bytes_ = 0;
+  while (1) {
+    if (feof(in)) {
+      break;
+    }
+
+    if (current == '#') {
+      state = 7;  // skip comment state
+    }
+
+    if (state == 7) {
+      // Comments end with a newline character.
+      if (current == '\n') {
+        state = 0;
+      }
+      current = fgetc(in);
+      continue;
+    }
+
+    if (state == 4) {  // Looking for the _ between num_bytes and byte values.
+      if (current == '_') {
+        state = 5;  // Start looking for a byte's value.
+      }
+      current = fgetc(in);
+      continue;
+    }
+
+    current_value = HexCharToNibble(current);
+    if (current_value == -1) {
+      // Skip over non hex characters.
+      current = fgetc(in);
+      continue;
+    }
+
+    switch (state) {
+      case 0:  // Looking for char 1 of 4 in num_bytes.
+        num_bytes = current_value << 4;
+        state = 1;
+        break;
+      case 1:  // Looking for char 2 of 4 in num_bytes.
+        num_bytes += current_value;
+        state = 2;
+        break;
+      case 2:  // Looking for char 3 of 4 in num_bytes.
+        num_bytes += current_value << 12;
+        state = 3;
+        break;
+      case 3:  // Looking for char 4 of 4 in num_bytes.
+        num_bytes += current_value << 8;
+        state = 4;  // Reached the end of num_bytes.
+        byte_index = 0;
+        this->num_bytes_ = num_bytes;
+        break;
+      case 5:
+        this->bytes_[byte_index] = current_value << 4;
+        state = 6;  // Has read the upper nibble of the byte.
+        break;
+      case 6:
+        this->bytes_[byte_index] += current_value;
+        byte_index++;
+        if (byte_index < num_bytes) {
+          state = 5;
+        } else {
+          return;
+        }
+        break;
+      case 7:
+        break;
+    }
+    current = fgetc(in);
   }
 }
 

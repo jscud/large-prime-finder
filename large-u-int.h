@@ -36,4 +36,8 @@ typedef struct {
 // would be represented as 0300_054A3D.
 void LargeUIntPrint(const LargeUInt* this, FILE* out);
 
+// Reads the next available LargeUInt from the file and stores the value in
+// the provided LargeUInt.
+void LargeUIntRead(FILE* in, LargeUInt* this);
+
 #endif

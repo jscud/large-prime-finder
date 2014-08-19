@@ -23,4 +23,15 @@ int main(void) {
   example.bytes_[0] = 5;
   LargeUIntPrint(&example, stdout);
   printf("\n");
+  FILE* f = fopen("example", "r");
+  LargeUIntRead(f, &example);
+  LargeUIntPrint(&example, stdout);
+  printf("\n");
+  LargeUIntRead(f, &example);
+  LargeUIntPrint(&example, stdout);
+  printf("\n");
+  LargeUIntRead(f, &example);
+  LargeUIntPrint(&example, stdout);
+  printf("\n");
+  fclose(f);
 }
