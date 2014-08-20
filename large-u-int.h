@@ -58,6 +58,9 @@ void LargeUIntInit(int starting_size, LargeUInt* this);
 // Increases available size in the large unisigned integer's internal storage.
 void LargeUIntGrow(LargeUInt* this);
 
+// Removes any leading zeroes by shrinking the number of bytes.
+void LargeUIntTrim(LargeUInt* this);
+
 // Sets the byte at index to the provided value if the index is in range and
 // the value will fit into an unsigned byte.
 void LargeUIntSetByte(int value, int index, LargeUInt* this);

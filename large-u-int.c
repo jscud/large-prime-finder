@@ -181,6 +181,19 @@ void LargeUIntInit(int starting_size, LargeUInt* this) {
   this->num_bytes_ = starting_size;
 }
 
+void LargeUIntGrow(LargeUInt* this) {
+  if (this->num_bytes_ == MAX_NUM_LARGE_U_INT_BYTES) {
+    ErrorOut("Unable to grow large integer.");
+  }
+  this->num_bytes_++;
+}
+
+void LargeUIntTrim(LargeUInt* this) {
+  while (this->num_bytes_ > 0 && this->bytes_[this->num_bytes_ - 1] == 0) {
+    this->num_bytes_--;
+  }
+}
+
 void LargeUIntSetByte(int value, int index, LargeUInt* this) {
   if (index < 0 || index >= this->num_bytes_) {
     ErrorOut("Index out of bounds when setting byte.");
