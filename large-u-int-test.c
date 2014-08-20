@@ -26,6 +26,12 @@ void Check(int condition, char* message) {
   }
 }
 
+void CheckLargeUInt(char* expected, LargeUInt* this, char* message) {
+  char buffer[65];
+  LargeUIntStore(this, 65, buffer);
+  Check(0 == strncmp(expected, buffer, 65), message);
+}
+
 void TestGetSetAndNumBytes() {
   LargeUInt num;
   LargeUIntInit(3, &num);
@@ -54,9 +60,7 @@ void TestLoadAndStore() {
   Check(188 == LargeUIntGetByte(0, &a_int), "First loaded byte should be 188");
   Check(0 == LargeUIntGetByte(1, &a_int), "Second loaded byte should be 0");
   Check(7 == LargeUIntGetByte(2, &a_int), "Third loaded byte should be 7");
-  LargeUIntStore(&a_int, 30, a_str);
-  Check(0 == strncmp(a_str, example, 10),
-        "String buffer should match example");
+  CheckLargeUInt(example, &a_int, "String buffer should match example");
 }
 
 int main(void) {
