@@ -47,6 +47,16 @@ void TestLoadAndStore() {
   LargeUIntStore(&a_int, 30, a_str);
   Check(0 == strncmp(a_str, "0200_0C63", 10),
         "String buffer should contain 0200_0C63");
+
+  char* example = "0300_BC0007";
+  LargeUIntLoad(strlen(example), example, &a_int);
+  Check(3 == LargeUIntNumBytes(&a_int), "Num bytes from loaded should be 3");
+  Check(188 == LargeUIntGetByte(0, &a_int), "First loaded byte should be 188");
+  Check(0 == LargeUIntGetByte(1, &a_int), "Second loaded byte should be 0");
+  Check(7 == LargeUIntGetByte(2, &a_int), "Third loaded byte should be 7");
+  LargeUIntStore(&a_int, 30, a_str);
+  Check(0 == strncmp(a_str, example, 10),
+        "String buffer should match example");
 }
 
 int main(void) {

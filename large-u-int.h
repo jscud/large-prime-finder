@@ -50,7 +50,7 @@ void LargeUIntStore(const LargeUInt* this, int buffer_size, char* buffer);
 
 // Reads the text representation of a large unsigned integer from a string
 // and stores loaded value into the provided location.
-void LargeUIntLoad(int buffer_size, char* buffer, const LargeUInt* this);
+void LargeUIntLoad(int buffer_size, char* buffer, LargeUInt* this);
 
 // Initializes the large unsigned integer to be ready to store a value.
 void LargeUIntInit(int starting_size, LargeUInt* this);

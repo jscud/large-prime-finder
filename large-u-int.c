@@ -55,7 +55,6 @@ void LargeUIntPrint(const LargeUInt* this, FILE* out) {
 // continue parsing the 0 when we've reached the end of this large unsigned
 // integer. The starting state is -1.
 static int ParseCharacter(int current, LargeUInt* this, int* state) {
-  printf("Current char: %c this->num_bytes: %i\n", current, this->num_bytes_);
   if (current == '#') {
     *state = -6;  // skip comment state
     return 1;
@@ -116,7 +115,7 @@ static int ParseCharacter(int current, LargeUInt* this, int* state) {
 
 void LargeUIntRead(FILE* in, LargeUInt* this) {
   if (in == NULL) {
-    ErrorOut("Invalid file, unable to read LargeUInt.\n");
+    ErrorOut("Invalid file, unable to read LargeUInt.");
   }
 
   int current = fgetc(in);
@@ -142,7 +141,7 @@ int LargeUIntBufferSize(const LargeUInt* this) {
 
 void LargeUIntStore(const LargeUInt* this, int buffer_size, char* buffer) {
   if (LargeUIntBufferSize(this) > buffer_size) {
-    ErrorOut("Insufficient space to store the value in the provided buffer");
+    ErrorOut("Insufficient space for value in the provided buffer.");
   }
 
   buffer[0] = kHexBytes[this->num_bytes_ >> 4 & 0x0F];
@@ -161,30 +160,40 @@ void LargeUIntStore(const LargeUInt* this, int buffer_size, char* buffer) {
   }
 }
 
-void LargeUIntLoad(int buffer_size, char* buffer, const LargeUInt* this) {
+void LargeUIntLoad(int buffer_size, char* buffer, LargeUInt* this) {
+  if (buffer == NULL) {
+    ErrorOut("Invalid input buffer, unable to load LargeUInt.");
+  }
 
+  int state = -1;  // start state
+  int i;
+  int parse_result = 1;
+  this->num_bytes_ = 0;
+  for (i = 0; i < buffer_size && buffer[i] != '\0' && parse_result; i++) {
+    parse_result = ParseCharacter(buffer[i], this, &state);
+  }
 }
 
 void LargeUIntInit(int starting_size, LargeUInt* this) {
   if (starting_size < 0 || starting_size > MAX_NUM_LARGE_U_INT_BYTES) {
-    ErrorOut("Invalis size when initializing a large integer");
+    ErrorOut("Invalis size when initializing a large integer.");
   }
   this->num_bytes_ = starting_size;
 }
 
 void LargeUIntSetByte(int value, int index, LargeUInt* this) {
   if (index < 0 || index >= this->num_bytes_) {
-    ErrorOut("Index out of bounds when setting byte");
+    ErrorOut("Index out of bounds when setting byte.");
   }
   if (value < 0 || value > 255) {
-    ErrorOut("Invalid value when setting byte");
+    ErrorOut("Invalid value when setting byte.");
   }
   this->bytes_[index] = value;
 }
 
 int LargeUIntGetByte(int index, const LargeUInt* this) {
   if (index < 0 || index >= this->num_bytes_) {
-    ErrorOut("Index out of bounds when getting byte");
+    ErrorOut("Index out of bounds when getting byte.");
   }
   return this->bytes_[index];
 }
