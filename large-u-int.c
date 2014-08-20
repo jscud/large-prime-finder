@@ -24,7 +24,7 @@ static const char kHexBytes[] = {'0', '1', '2', '3', '4', '5', '6', '7',
 
 // Exits the program after sending the message to stderr.
 static void ErrorOut(char* message) {
-  fprintf(stderr, message);
+  fprintf(stderr, "%s\n", message);
   exit(1);
 }
 
@@ -136,15 +136,40 @@ void LargeUIntRead(FILE* in, LargeUInt* this) {
   }
 }
 
+int LargeUIntBufferSize(const LargeUInt* this) {
+  return 5 + 2 * this->num_bytes_;
+}
+
+void LargeUIntStore(const LargeUInt* this, int buffer_size, char* buffer) {
+  if (LargeUIntBufferSize(this) > buffer_size) {
+    ErrorOut("Insufficient space to store the value in the provided buffer");
+  }
+
+  buffer[0] = kHexBytes[this->num_bytes_ >> 4 & 0x0F];
+  buffer[1] = kHexBytes[this->num_bytes_ & 0x0F];
+  buffer[2] = kHexBytes[this->num_bytes_ >> 12 & 0x0F];
+  buffer[3] = kHexBytes[this->num_bytes_ >> 8 & 0x0F];
+  buffer[4] = '_';
+
+  int i = 0;
+  int j = 5;
+  for (; i < this->num_bytes_; i++) {
+    buffer[j] = kHexBytes[this->bytes_[i] >> 4 & 0x0F];
+    j++;
+    buffer[j] = kHexBytes[this->bytes_[i] & 0x0F];
+    j++;
+  }
+}
+
+void LargeUIntLoad(int buffer_size, char* buffer, const LargeUInt* this) {
+
+}
+
 void LargeUIntInit(int starting_size, LargeUInt* this) {
   if (starting_size < 0 || starting_size > MAX_NUM_LARGE_U_INT_BYTES) {
     ErrorOut("Invalis size when initializing a large integer");
   }
   this->num_bytes_ = starting_size;
-}
-
-int LargeUIntBufferSize(const LargeUInt* this) {
-  return 5 + 2 * this->num_bytes_;
 }
 
 void LargeUIntSetByte(int value, int index, LargeUInt* this) {

@@ -17,6 +17,7 @@
 #include "large-u-int.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 void Check(int condition, char* message) {
   if (!condition) {
@@ -37,7 +38,19 @@ void TestGetSetAndNumBytes() {
   Check(76 == LargeUIntGetByte(2, &num), "Num byte 0 should be 76");
 }
 
+void TestLoadAndStore() {
+  char a_str[30];
+  LargeUInt a_int;
+  LargeUIntInit(2, &a_int);
+  LargeUIntSetByte(12, 0, &a_int); 
+  LargeUIntSetByte(99, 1, &a_int);
+  LargeUIntStore(&a_int, 30, a_str);
+  Check(0 == strncmp(a_str, "0200_0C63", 10),
+        "String buffer should contain 0200_0C63");
+}
+
 int main(void) {
   TestGetSetAndNumBytes();
+  TestLoadAndStore();
   printf("All tests passed\n");
 }
