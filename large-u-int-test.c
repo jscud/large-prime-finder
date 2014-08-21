@@ -67,15 +67,15 @@ void TestGrowAndTrim() {
   LargeUInt num;
   char* numstr = "0300_000001";
   LargeUIntLoad(strlen(numstr), numstr, &num);
-  Check(3 == LargeUIntNumBytes(&num), "Initially should have 3 bytes.");
+  Check(3 == LargeUIntNumBytes(&num), "Initially should have 3 bytes");
   LargeUIntGrow(&num);
   LargeUIntSetByte(0, 3, &num);
-  Check(4 == LargeUIntNumBytes(&num), "Should have 4 bytes after growing.");
+  Check(4 == LargeUIntNumBytes(&num), "Should have 4 bytes after growing");
   LargeUIntTrim(&num);
-  Check(3 == LargeUIntNumBytes(&num), "Back down to 3 bytes after trimming.");
+  Check(3 == LargeUIntNumBytes(&num), "Back down to 3 bytes after trimming");
   LargeUIntSetByte(0, 2, &num);
   LargeUIntTrim(&num);
-  Check(0 == LargeUIntNumBytes(&num), "Down to 0 bytes after trimming.");
+  Check(0 == LargeUIntNumBytes(&num), "Down to 0 bytes after trimming");
 }
 
 void TestCompare() {
