@@ -78,9 +78,34 @@ void TestGrowAndTrim() {
   Check(0 == LargeUIntNumBytes(&num), "Down to 0 bytes after trimming.");
 }
 
+void TestCompare() {
+  LargeUInt a, b;
+  LargeUIntLoad(11, "0300_431232", &a);
+  LargeUIntLoad(9, "0200_4312", &b);
+  Check(-1 == LargeUIntCompare(&a, &b),
+        "A 3 byte int should be larger than a 2 byte int");
+  Check(1 == LargeUIntCompare(&b, &a),
+        "A 2 byte int should be smaller than a 3 byte int");
+  Check(0 == LargeUIntCompare(&a, &a), "An int should be equal to itself");
+
+  LargeUIntLoad(13, "0400_00001101", &b);
+  Check(1 == LargeUIntCompare(&a, &b),
+        "A 3 byte int should be smaller than a 4 byte int");
+  Check(-1 == LargeUIntCompare(&b, &a),
+        "A 4 byte int should be larger than a 3 byte int");
+
+  LargeUIntLoad(11, "0300_431132", &b);
+  Check(-1 == LargeUIntCompare(&a, &b),
+        "0x321243 should be greater than 0x321143");
+
+  LargeUIntLoad(11, "0300_431232", &b);
+  Check(0 == LargeUIntCompare(&a, &b), "0x321243 should equal 0x321243");
+}
+
 int main(void) {
   TestGetSetAndNumBytes();
   TestLoadAndStore();
   TestGrowAndTrim();
+  TestCompare();
   printf("All tests passed\n");
 }

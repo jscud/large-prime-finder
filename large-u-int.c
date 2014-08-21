@@ -214,3 +214,21 @@ int LargeUIntGetByte(int index, const LargeUInt* this) {
 int LargeUIntNumBytes(const LargeUInt* this) {
   return this->num_bytes_;
 }
+
+int LargeUIntCompare(const LargeUInt* this, const LargeUInt* that) {
+  if (this->num_bytes_ > that->num_bytes_) {
+    return -1;
+  } else if (this->num_bytes_ < that->num_bytes_) {
+    return 1;
+  } else {
+    int i;
+    for (i = 0; i < this->num_bytes_; i++) {
+      if (this->bytes_[i] > that->bytes_[i]) {
+        return -1;
+      } else if (this->bytes_[i] < that->bytes_[i]) {
+        return 1;
+      }
+    }
+  }
+  return 0;
+}

@@ -71,4 +71,9 @@ int LargeUIntGetByte(int index, const LargeUInt* this);
 // Reports the number of bytes currently in the large unsiged integer.
 int LargeUIntNumBytes(const LargeUInt* this);
 
+// Compares two large unsigned integers, returning 0 if they are equal, 1 if
+// the second is greater than the first, and -1 if the first is greater than
+// the second.
+int LargeUIntCompare(const LargeUInt* this, const LargeUInt* that);
+
 #endif
