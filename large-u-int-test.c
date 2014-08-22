@@ -102,10 +102,18 @@ void TestCompare() {
   Check(0 == LargeUIntCompare(&a, &b), "0x321243 should equal 0x321243");
 }
 
+void TestClone() {
+  LargeUInt a, b;
+  LargeUIntLoad(11, "0300_AABBCC", &a);
+  LargeUIntClone(&a, &b);
+  Check(0 == LargeUIntCompare(&a, &b), "Cloned int should equal original");
+}
+
 int main(void) {
   TestGetSetAndNumBytes();
   TestLoadAndStore();
   TestGrowAndTrim();
   TestCompare();
+  TestClone();
   printf("All tests passed\n");
 }

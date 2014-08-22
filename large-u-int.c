@@ -18,6 +18,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 static const char kHexBytes[] = {'0', '1', '2', '3', '4', '5', '6', '7',
                                  '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
@@ -231,4 +232,9 @@ int LargeUIntCompare(const LargeUInt* this, const LargeUInt* that) {
     }
   }
   return 0;
+}
+
+void LargeUIntClone(const LargeUInt* that, LargeUInt* this) {
+  this->num_bytes_ = that->num_bytes_;
+  memmove(this->bytes_, that->bytes_, this->num_bytes_);
 }

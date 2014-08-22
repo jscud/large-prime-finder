@@ -76,4 +76,11 @@ int LargeUIntNumBytes(const LargeUInt* this);
 // the second.
 int LargeUIntCompare(const LargeUInt* this, const LargeUInt* that);
 
+// Copies the value from the first argument into the second argument.
+void LargeUIntClone(const LargeUInt* that, LargeUInt* this);
+
+// Adds the first argument into the second argument. The value of the second
+// argument is set to the sum of this and that.
+void LargeUIntAdd(const LargeUInt* that, LargeUInt* this);
+
 #endif
