@@ -83,6 +83,9 @@ void LargeUIntClone(const LargeUInt* that, LargeUInt* this);
 // argument is set to the sum of this and that.
 void LargeUIntAdd(const LargeUInt* that, LargeUInt* this);
 
+// Adds 1 to the provided large unsigned integer.
+void LargeUIntIncrement(LargeUInt* this);
+
 // Subtracts the first argument from the second argument. The value of the
 // second argument is set to the difference of this and that. If the second
 // argument is smaller than the first, execution will halt rather than

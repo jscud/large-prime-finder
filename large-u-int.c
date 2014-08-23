@@ -268,6 +268,25 @@ void LargeUIntAdd(const LargeUInt* that, LargeUInt* this) {
   }
 }
 
+void LargeUIntIncrement(LargeUInt* this) {
+  int carry = 1;
+  int value = 0;
+  for (int i = 0; i < this->num_bytes_ && carry == 1; i++) {
+    value = this->bytes_[i] + carry;
+    if (value > 255) {
+      value -= 256;
+      carry = 1;
+    } else {
+      carry = 0;
+    }
+    this->bytes_[i] = value;
+  }
+  if (carry == 1) {
+    LargeUIntGrow(this);
+    this->bytes_[this->num_bytes_ - 1] = carry;
+  }
+}
+
 void LargeUIntSub(const LargeUInt* that, LargeUInt* this) {
   int diff = LargeUIntCompare(that, this);
   if (diff == 0) {

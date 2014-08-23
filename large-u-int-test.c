@@ -109,7 +109,7 @@ void TestClone() {
   Check(0 == LargeUIntCompare(&a, &b), "Cloned int should equal original");
 }
 
-void TestAdd() {
+void TestAddAndIncrement() {
   LargeUInt a, b;
   LargeUIntLoad(11, "0300_FFFFFF", &a);
   LargeUIntLoad(7, "0100_02", &b);
@@ -121,6 +121,10 @@ void TestAdd() {
   LargeUIntLoad(11, "0300_010099", &b);
   LargeUIntAdd(&b, &a);
   CheckLargeUInt("0300_BC0099", &a, "Add should expand a to the size of b");
+
+  LargeUIntLoad(11, "0300_FFFFFF", &a);
+  LargeUIntIncrement(&a);
+  CheckLargeUInt("0400_00000001", &a, "Increment should carry to grow a");
 }
 
 void TestSub() {
@@ -138,7 +142,7 @@ int main(void) {
   TestGrowAndTrim();
   TestCompare();
   TestClone();
-  TestAdd();
+  TestAddAndIncrement();
   TestSub();
   printf("All tests passed\n");
 }
