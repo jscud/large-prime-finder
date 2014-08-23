@@ -92,4 +92,9 @@ void LargeUIntIncrement(LargeUInt* this);
 // allowing the second argument to go negative.
 void LargeUIntSub(const LargeUInt* that, LargeUInt* this);
 
+// Divides the numerator by the denominator storing the results in the
+// quotient and remainder.
+void LargeUIntDivide(const LargeUInt* numerator, const LargeUInt* denominator,
+                     LargeUInt* quotient, LargeUInt* remainder);
+
 #endif

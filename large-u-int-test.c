@@ -135,6 +135,14 @@ void TestSub() {
   CheckLargeUInt("0300_FDFF0E", &a, "Difference should be 983037");
 }
 
+void TestDivide() {
+  LargeUInt n, d, q, r;
+  LargeUIntLoad(7, "0100_0F", &n);
+  LargeUIntLoad(7, "0100_05", &d);
+  LargeUIntDivide(&n, &d, &q, &r);
+  CheckLargeUInt("0100_03", &q, "Quotient should be 3");
+  CheckLargeUInt("0000_", &r, "Remainder should be 0");
+}
 
 int main(void) {
   TestGetSetAndNumBytes();
@@ -144,5 +152,6 @@ int main(void) {
   TestClone();
   TestAddAndIncrement();
   TestSub();
+  TestDivide();
   printf("All tests passed\n");
 }

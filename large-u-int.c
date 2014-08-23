@@ -159,6 +159,7 @@ void LargeUIntStore(const LargeUInt* this, int buffer_size, char* buffer) {
     buffer[j] = kHexBytes[this->bytes_[i] & 0x0F];
     j++;
   }
+  buffer[j] = '\0';
 }
 
 void LargeUIntLoad(int buffer_size, char* buffer, LargeUInt* this) {
@@ -316,5 +317,21 @@ void LargeUIntSub(const LargeUInt* that, LargeUInt* this) {
   while (this->bytes_[this->num_bytes_ - 1] == 0 && this->num_bytes_ > 0) {
     this->num_bytes_--;
   }
+}
+
+void LargeUIntDivide(const LargeUInt* numerator, const LargeUInt* denominator,
+                     LargeUInt* quotient, LargeUInt* remainder) {
+  LargeUIntInit(1, quotient);
+  LargeUIntSetByte(0, 0, quotient);
+  LargeUIntClone(numerator, remainder);
+
+  // Divide by counting subtractions. Inneffiecient, but easy to verify.
+  while (LargeUIntCompare(remainder, denominator) <= 0) {
+    LargeUIntIncrement(quotient);
+    LargeUIntSub(denominator, remainder);
+  }
+
+  LargeUIntTrim(quotient);
+  LargeUIntTrim(remainder);
 }
 
