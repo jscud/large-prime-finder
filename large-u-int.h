@@ -83,4 +83,10 @@ void LargeUIntClone(const LargeUInt* that, LargeUInt* this);
 // argument is set to the sum of this and that.
 void LargeUIntAdd(const LargeUInt* that, LargeUInt* this);
 
+// Subtracts the first argument from the second argument. The value of the
+// second argument is set to the difference of this and that. If the second
+// argument is smaller than the first, execution will halt rather than
+// allowing the second argument to go negative.
+void LargeUIntSub(const LargeUInt* that, LargeUInt* this);
+
 #endif

@@ -267,3 +267,35 @@ void LargeUIntAdd(const LargeUInt* that, LargeUInt* this) {
     this->bytes_[this->num_bytes_ - 1] = carry;
   }
 }
+
+void LargeUIntSub(const LargeUInt* that, LargeUInt* this) {
+  int diff = LargeUIntCompare(that, this);
+  if (diff == 0) {
+    LargeUIntInit(0, this);
+    return;
+  } else if (diff < 0) {
+    ErrorOut("Subtraction would have caused a negative value.");
+  }
+
+  // We now know that this is larger than that.
+  int borrow = 0;
+  int value = 0;
+  for (int i = 0; i < this->num_bytes_; i++) {
+    if (i < that->num_bytes_) {
+      value = this->bytes_[i] - that->bytes_[i] - borrow;
+    } else {
+      value = this->bytes_[i] - borrow;
+    }
+    if (value < 0) {
+      value += 256;
+      borrow = 1;
+    } else {
+      borrow = 0;
+    }
+    this->bytes_[i] = value;
+  }
+  while (this->bytes_[this->num_bytes_ - 1] == 0 && this->num_bytes_ > 0) {
+    this->num_bytes_--;
+  }
+}
+

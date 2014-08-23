@@ -123,11 +123,22 @@ void TestAdd() {
   CheckLargeUInt("0300_BC0099", &a, "Add should expand a to the size of b");
 }
 
+void TestSub() {
+  LargeUInt a, b;
+  LargeUIntLoad(11, "0300_00000F", &a);
+  LargeUIntLoad(7, "0100_03", &b);
+  LargeUIntSub(&b, &a); // 983040 - 3 = 983037
+  CheckLargeUInt("0300_FDFF0E", &a, "Difference should be 983037");
+}
+
+
 int main(void) {
   TestGetSetAndNumBytes();
   TestLoadAndStore();
   TestGrowAndTrim();
   TestCompare();
   TestClone();
+  TestAdd();
+  TestSub();
   printf("All tests passed\n");
 }
