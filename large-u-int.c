@@ -238,3 +238,32 @@ void LargeUIntClone(const LargeUInt* that, LargeUInt* this) {
   this->num_bytes_ = that->num_bytes_;
   memmove(this->bytes_, that->bytes_, this->num_bytes_);
 }
+
+void LargeUIntAdd(const LargeUInt* that, LargeUInt* this) {
+  int carry = 0;
+  int value = 0;
+  for (int i = 0; i < this->num_bytes_ || i < that->num_bytes_; i++) {
+    if (i >= this->num_bytes_) {
+      value = that->bytes_[i] + carry;
+      LargeUIntGrow(this);
+    } else if (i < that->num_bytes_) {
+      value = this->bytes_[i] + that->bytes_[i] + carry;
+    } else if (carry > 0) {
+      value = this->bytes_[i] + carry;
+    } else {
+      value = this->bytes_[i];
+    }
+    if (value > 255) {
+      value -= 256;
+      carry = 1;
+    } else {
+      carry = 0;
+    }
+    this->bytes_[i] = value;
+    value = 0;
+  }
+  if (carry > 0) {
+    LargeUIntGrow(this);
+    this->bytes_[this->num_bytes_ - 1] = carry;
+  }
+}

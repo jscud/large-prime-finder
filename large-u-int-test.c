@@ -109,6 +109,20 @@ void TestClone() {
   Check(0 == LargeUIntCompare(&a, &b), "Cloned int should equal original");
 }
 
+void TestAdd() {
+  LargeUInt a, b;
+  LargeUIntLoad(11, "0300_FFFFFF", &a);
+  LargeUIntLoad(7, "0100_02", &b);
+  LargeUIntAdd(&b, &a);
+  CheckLargeUInt("0100_02", &b, "After add, b should be unchanged");
+  CheckLargeUInt("0400_01000001", &a, "Add should carry to grow a");
+
+  LargeUIntLoad(7, "0100_BB", &a);
+  LargeUIntLoad(11, "0300_010099", &b);
+  LargeUIntAdd(&b, &a);
+  CheckLargeUInt("0300_BC0099", &a, "Add should expand a to the size of b");
+}
+
 int main(void) {
   TestGetSetAndNumBytes();
   TestLoadAndStore();
