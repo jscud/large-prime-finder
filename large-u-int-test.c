@@ -185,6 +185,16 @@ void TestDivide() {
   LargeUIntDivide(&n, &d, &q, &r);
   CheckLargeUInt("0100_02", &q, "Quotient should be 2");
   CheckLargeUInt("0100_04", &r, "Remainder should be 4");
+
+  // In base 10: 15746896 / 3 = 5248965 r 1
+  // In base 16: 0xF04750 / 3 = 0x5017C5 r 1
+  LargeUIntLoad(11, "0300_5047F0", &n);
+  LargeUIntLoad(7, "0100_03", &d);
+  LargeUIntDivide(&n, &d, &q, &r);
+  CheckLargeUInt("0300_C51750", &q,
+                 "Quotient for three byte number should be 5,248,965");
+  CheckLargeUInt("0100_01", &r,
+                 "Remainder for three byte number should be 1");
 }
 
 int main(void) {
