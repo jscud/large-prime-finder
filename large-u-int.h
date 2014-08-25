@@ -92,6 +92,10 @@ void LargeUIntIncrement(LargeUInt* this);
 // allowing the second argument to go negative.
 void LargeUIntSub(const LargeUInt* that, LargeUInt* this);
 
+// Subtracts 1 to the provided large unsigned integer. The integer must be
+// greater than zero.
+void LargeUIntDecrement(LargeUInt* this);
+
 // Divides the numerator by the denominator storing the results in the
 // quotient and remainder.
 void LargeUIntDivide(const LargeUInt* numerator, const LargeUInt* denominator,

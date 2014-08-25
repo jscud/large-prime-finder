@@ -314,7 +314,33 @@ void LargeUIntSub(const LargeUInt* that, LargeUInt* this) {
     }
     this->bytes_[i] = value;
   }
-  while (this->bytes_[this->num_bytes_ - 1] == 0 && this->num_bytes_ > 0) {
+  while (this->num_bytes_ > 0 && this->bytes_[this->num_bytes_ - 1] == 0) {
+    this->num_bytes_--;
+  }
+}
+
+void LargeUIntDecrement(LargeUInt* this) {
+  while (this->num_bytes_ > 0 && this->bytes_[this->num_bytes_ - 1] == 0) {
+    this->num_bytes_--;
+  }
+  if (this->num_bytes_ == 0) {
+    ErrorOut("Unable to decrement an integer of value 0.");
+  }
+
+  int borrow = 1;
+  int value = 0;
+  for (int i = 0; i < this->num_bytes_; i++) {
+    value = this->bytes_[i] - borrow;
+    if (value < 0) {
+      value += 256;
+      borrow = 1;
+    } else {
+      borrow = 0;
+    }
+    this->bytes_[i] = value;
+  }
+
+  while (this->num_bytes_ > 0 && this->bytes_[this->num_bytes_ - 1] == 0) {
     this->num_bytes_--;
   }
 }
@@ -334,4 +360,3 @@ void LargeUIntDivide(const LargeUInt* numerator, const LargeUInt* denominator,
   LargeUIntTrim(quotient);
   LargeUIntTrim(remainder);
 }
-

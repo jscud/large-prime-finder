@@ -127,12 +127,20 @@ void TestAddAndIncrement() {
   CheckLargeUInt("0400_00000001", &a, "Increment should carry to grow a");
 }
 
-void TestSub() {
+void TestSubAndDecrement() {
   LargeUInt a, b;
   LargeUIntLoad(11, "0300_00000F", &a);
   LargeUIntLoad(7, "0100_03", &b);
   LargeUIntSub(&b, &a); // 983040 - 3 = 983037
   CheckLargeUInt("0300_FDFF0E", &a, "Difference should be 983037");
+
+  LargeUIntLoad(11, "0300_00000F", &a);
+  LargeUIntDecrement(&a);
+  CheckLargeUInt("0300_FFFF0E", &a, "After decrement should be 983039");
+
+  LargeUIntLoad(7, "0100_01", &a);
+  LargeUIntDecrement(&a);
+  CheckLargeUInt("0000_", &a, "After decrement should be 0");
 }
 
 void TestDivide() {
@@ -151,7 +159,7 @@ int main(void) {
   TestCompare();
   TestClone();
   TestAddAndIncrement();
-  TestSub();
+  TestSubAndDecrement();
   TestDivide();
   printf("All tests passed\n");
 }
