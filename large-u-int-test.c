@@ -149,7 +149,15 @@ void TestMultiply() {
   LargeUIntLoad(7, "0100_03", &b);
   LargeUIntMultiply(&b, &a);
   CheckLargeUInt("0100_0F", &a, "Result should be 15");
-}
+
+  // In base 10: 85632148 * 5298632 = 453733239621536
+  // In base 16: 0x51AA494 * 0x50D9C8 = 0x19CAB009207A0
+  LargeUIntLoad(13, "0400_94A41A05", &a);
+  LargeUIntLoad(11, "0300_C8D950", &b);
+  LargeUIntMultiply(&b, &a);
+  CheckLargeUInt("0700_A0079200AB9C01", &a,
+                 "Result should be 453,733,239,621,536");
+} 
 
 void TestDivide() {
   LargeUInt n, d, q, r;
