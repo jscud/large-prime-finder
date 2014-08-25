@@ -329,7 +329,7 @@ void LargeUIntDecrement(LargeUInt* this) {
 
   int borrow = 1;
   int value = 0;
-  for (int i = 0; i < this->num_bytes_; i++) {
+  for (int i = 0; i < this->num_bytes_ && borrow == 1; i++) {
     value = this->bytes_[i] - borrow;
     if (value < 0) {
       value += 256;
