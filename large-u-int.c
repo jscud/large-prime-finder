@@ -345,6 +345,27 @@ void LargeUIntDecrement(LargeUInt* this) {
   }
 }
 
+void LargeUIntMultiply(const LargeUInt* that, LargeUInt* this) {
+  // Multiply by zero sets this to zero.
+  if (that->num_bytes_ == 0) {
+    this->num_bytes_ = 0;
+  }
+
+  // Multiplied based on repeated additions. Inefficient, but easy to verify.
+  LargeUInt value;
+  LargeUIntClone(this, &value);
+
+  LargeUInt additions;
+  LargeUIntClone(that, &additions);
+  // Decrement since this is already value multiplied by one.
+  LargeUIntDecrement(&additions);
+
+  while(additions.num_bytes_ > 0) {
+    LargeUIntDecrement(&additions);
+    LargeUIntAdd(&value, this);
+  }
+}
+
 void LargeUIntDivide(const LargeUInt* numerator, const LargeUInt* denominator,
                      LargeUInt* quotient, LargeUInt* remainder) {
   LargeUIntInit(1, quotient);

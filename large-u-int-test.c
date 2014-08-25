@@ -143,6 +143,14 @@ void TestSubAndDecrement() {
   CheckLargeUInt("0000_", &a, "After decrement should be 0");
 }
 
+void TestMultiply() {
+  LargeUInt a, b;
+  LargeUIntLoad(7, "0100_05", &a);
+  LargeUIntLoad(7, "0100_03", &b);
+  LargeUIntMultiply(&b, &a);
+  CheckLargeUInt("0100_0F", &a, "Result should be 15");
+}
+
 void TestDivide() {
   LargeUInt n, d, q, r;
   LargeUIntLoad(7, "0100_0F", &n);
@@ -160,6 +168,7 @@ int main(void) {
   TestClone();
   TestAddAndIncrement();
   TestSubAndDecrement();
+  TestMultiply();
   TestDivide();
   printf("All tests passed\n");
 }

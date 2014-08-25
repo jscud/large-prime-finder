@@ -96,6 +96,11 @@ void LargeUIntSub(const LargeUInt* that, LargeUInt* this);
 // greater than zero.
 void LargeUIntDecrement(LargeUInt* this);
 
+// Multiplies the second argument by the first, storing the result in the
+// location provided in the second argument. Will cause the program to halt
+// if the result is too big to store in a large unsigned integer.
+void LargeUIntMultiply(const LargeUInt* that, LargeUInt* this);
+
 // Divides the numerator by the denominator storing the results in the
 // quotient and remainder.
 void LargeUIntDivide(const LargeUInt* numerator, const LargeUInt* denominator,
