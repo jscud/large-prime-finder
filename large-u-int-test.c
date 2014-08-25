@@ -173,6 +173,18 @@ void TestDivide() {
   LargeUIntDivide(&n, &d, &q, &r);
   CheckLargeUInt("0100_03", &q, "Quotient should be 3");
   CheckLargeUInt("0000_", &r, "Remainder should be 0");
+
+  LargeUIntLoad(7, "0100_15", &n);
+  LargeUIntLoad(7, "0100_05", &d);
+  LargeUIntDivide(&n, &d, &q, &r);
+  CheckLargeUInt("0100_04", &q, "Quotient should be 4");
+  CheckLargeUInt("0100_01", &r, "Remainder should be 1");
+
+  LargeUIntLoad(7, "0100_0E", &n);
+  LargeUIntLoad(7, "0100_05", &d);
+  LargeUIntDivide(&n, &d, &q, &r);
+  CheckLargeUInt("0100_02", &q, "Quotient should be 2");
+  CheckLargeUInt("0100_04", &r, "Remainder should be 4");
 }
 
 int main(void) {
