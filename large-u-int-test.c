@@ -134,6 +134,13 @@ void TestSubAndDecrement() {
   LargeUIntSub(&b, &a); // 983040 - 3 = 983037
   CheckLargeUInt("0300_FDFF0E", &a, "Difference should be 983037");
 
+  // In base 10: 85632148 - 5298632 = 80333516
+  // In base 16: 0x51AA494 - 0x50D9C8 = 0x4C9CACC
+  LargeUIntLoad(13, "0400_94A41A05", &a);
+  LargeUIntLoad(11, "0300_C8D950", &b);
+  LargeUIntSub(&b, &a);
+  CheckLargeUInt("0400_CCCAC904", &a, "Difference should be 80333516");
+
   LargeUIntLoad(11, "0300_00000F", &a);
   LargeUIntDecrement(&a);
   CheckLargeUInt("0300_FFFF0E", &a, "After decrement should be 983039");

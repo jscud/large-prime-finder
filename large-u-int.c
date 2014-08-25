@@ -368,8 +368,7 @@ void LargeUIntMultiply(const LargeUInt* that, LargeUInt* this) {
 
 void LargeUIntDivide(const LargeUInt* numerator, const LargeUInt* denominator,
                      LargeUInt* quotient, LargeUInt* remainder) {
-  LargeUIntInit(1, quotient);
-  LargeUIntSetByte(0, 0, quotient);
+  quotient->num_bytes_ = 0;
   LargeUIntClone(numerator, remainder);
 
   // Divide by counting subtractions. Inneffiecient, but easy to verify.
