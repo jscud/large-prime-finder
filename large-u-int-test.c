@@ -202,6 +202,12 @@ void TestDivide() {
   CheckLargeUInt("0100_02", &q, "Quotient should be 2");
   CheckLargeUInt("0100_04", &r, "Remainder should be 4");
 
+  LargeUIntLoad(7, "0100_07", &n);
+  LargeUIntLoad(7, "0100_08", &d);
+  LargeUIntDivide(&n, &d, &q, &r);
+  CheckLargeUInt("0000_", &q, "Quotient should be 0");
+  CheckLargeUInt("0100_07", &r, "Remainder should be 7");
+
   // In base 10: 15746896 / 3 = 5248965 r 1
   // In base 16: 0xF04750 / 3 = 0x5017C5 r 1
   LargeUIntLoad(11, "0300_5047F0", &n);
