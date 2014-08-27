@@ -74,6 +74,9 @@ int LargeUIntNumBytes(const LargeUInt* this);
 // Compares two large unsigned integers, returning 0 if they are equal, 1 if
 // the second is greater than the first, and -1 if the first is greater than
 // the second.
+// this == that --> 0
+// this < that  --> 1
+// this > that  --> -1
 int LargeUIntCompare(const LargeUInt* this, const LargeUInt* that);
 
 // Copies the value from the first argument into the second argument.
