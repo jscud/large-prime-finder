@@ -383,14 +383,43 @@ void LargeUIntMultiply(const LargeUInt* that, LargeUInt* this) {
 void LargeUIntDivide(const LargeUInt* numerator, const LargeUInt* denominator,
                      LargeUInt* quotient, LargeUInt* remainder) {
   quotient->num_bytes_ = 0;
-  LargeUIntClone(numerator, remainder);
+  if (numerator->num_bytes_ == 0) {
+    remainder->num_bytes_ = 0;
+    return;
+  }
 
-  // Divide by counting subtractions. Inneffiecient, but easy to verify.
-  while (LargeUIntCompare(remainder, denominator) <= 0) {
-    LargeUIntIncrement(quotient);
-    LargeUIntSub(denominator, remainder);
+  LargeUInt partial_numerator;
+  partial_numerator.num_bytes_ = 0;
+  int bytes_consumed = 0;
+  while (bytes_consumed < numerator->num_bytes_) {
+    while (bytes_consumed < numerator->num_bytes_ &&
+           LargeUIntCompare(denominator, &partial_numerator) < 0) {
+      if (partial_numerator.num_bytes_ == 0) {
+        partial_numerator.num_bytes_ = 1;
+      } else {
+        LargeUIntByteShift(&partial_numerator);
+      }
+      bytes_consumed++;
+      partial_numerator.bytes_[0] =
+          numerator->bytes_[numerator->num_bytes_ - bytes_consumed];
+    }
+
+    // Make space in the quotient to receive this segment of the quotient.
+    if (quotient->num_bytes_ == 0) {
+      quotient->num_bytes_ = 1;
+      quotient->bytes_[0] = 0;
+    } else {
+      LargeUIntByteShift(quotient);
+    }
+    // Determine how many times the denominator goes into the
+    // partial_numerator by counting subtractions.
+    while (LargeUIntCompare(denominator, &partial_numerator) >= 0) {
+      LargeUIntSub(denominator, &partial_numerator);
+      LargeUIntIncrement(quotient);
+    }
   }
 
   LargeUIntTrim(quotient);
+  LargeUIntClone(&partial_numerator, remainder);
   LargeUIntTrim(remainder);
 }
