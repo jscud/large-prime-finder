@@ -224,7 +224,8 @@ int LargeUIntCompare(const LargeUInt* this, const LargeUInt* that) {
     return 1;
   } else {
     int i;
-    for (i = 0; i < this->num_bytes_; i++) {
+    // Start with the most significant byte.
+    for (i = this->num_bytes_ - 1; i >= 0; i--) {
       if (this->bytes_[i] > that->bytes_[i]) {
         return -1;
       } else if (this->bytes_[i] < that->bytes_[i]) {

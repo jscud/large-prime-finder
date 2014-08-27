@@ -100,6 +100,11 @@ void TestCompare() {
 
   LargeUIntLoad(11, "0300_431232", &b);
   Check(0 == LargeUIntCompare(&a, &b), "0x321243 should equal 0x321243");
+
+  LargeUIntLoad(13, "0400_1F055ED0", &a);
+  LargeUIntLoad(13, "0400_49531D1C", &b);
+  Check(-1 == LargeUIntCompare(&a, &b),
+        "0xD0... should be greater than 0x1C...");
 }
 
 void TestClone() {
@@ -203,6 +208,14 @@ void TestDivide() {
   LargeUIntDivide(&n, &d, &q, &r);
   CheckLargeUInt("0300_E23201", &q, "Quotient should be 78,562");
   CheckLargeUInt("0200_1D17", &r, "Remainder should be 5,917");
+
+  // In base 10: 981238718624873549 / 471683913 = 2080288709 r 194035232
+  // In base 16: 0xD9E0F6A6F7EBC4D / 0x1C1D5349 = 0x7BFEAFC5 r 0xB90BE20
+  LargeUIntLoad(21, "0800_4DBC7E6F6A0F9E0D", &n);
+  LargeUIntLoad(13, "0400_49531D1C", &d);
+  LargeUIntDivide(&n, &d, &q, &r);
+  CheckLargeUInt("0400_C5AFFE7B", &q, "Quotient should be 2,080,288,709");
+  CheckLargeUInt("0400_20BE900B", &r, "Remainder should be 194,035,232");
 }
 
 int main(void) {
