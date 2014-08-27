@@ -114,6 +114,17 @@ void TestClone() {
   Check(0 == LargeUIntCompare(&a, &b), "Cloned int should equal original");
 }
 
+void TestShift() {
+  LargeUInt a;
+  LargeUIntLoad(11, "0300_AABBCC", &a);
+  LargeUIntByteShift(&a);
+  CheckLargeUInt("0400_00AABBCC", &a, "Shift should add low order zero");
+
+  LargeUIntLoad(5, "0000_", &a);
+  LargeUIntByteShift(&a);
+  CheckLargeUInt("0000_", &a, "Shifting zero should produce zero");
+}
+
 void TestAddAndIncrement() {
   LargeUInt a, b;
   LargeUIntLoad(11, "0300_FFFFFF", &a);
@@ -224,6 +235,7 @@ int main(void) {
   TestGrowAndTrim();
   TestCompare();
   TestClone();
+  TestShift();
   TestAddAndIncrement();
   TestSubAndDecrement();
   TestMultiply();
