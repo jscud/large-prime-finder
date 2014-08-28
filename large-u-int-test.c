@@ -141,6 +141,10 @@ void TestAddAndIncrement() {
   LargeUIntLoad(11, "0300_FFFFFF", &a);
   LargeUIntIncrement(&a);
   CheckLargeUInt("0400_00000001", &a, "Increment should carry to grow a");
+
+  LargeUIntLoad(11, "0300_FFFFFF", &a);
+  LargeUIntAddByte(3, &a);
+  CheckLargeUInt("0400_02000001", &a, "Add byte 2 should carry to grow a");
 }
 
 void TestSubAndDecrement() {

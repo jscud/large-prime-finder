@@ -283,10 +283,13 @@ void LargeUIntAdd(const LargeUInt* that, LargeUInt* this) {
   }
 }
 
-void LargeUIntIncrement(LargeUInt* this) {
-  int carry = 1;
+void LargeUIntAddByte(int byte, LargeUInt* this) {
+  if (byte < 0 || byte > 255) {
+    ErrorOut("Byte value in addition should be between 0 and 255.");
+  }
+  int carry = byte;
   int value = 0;
-  for (int i = 0; i < this->num_bytes_ && carry == 1; i++) {
+  for (int i = 0; i < this->num_bytes_ && carry > 0; i++) {
     value = this->bytes_[i] + carry;
     if (value > 255) {
       value -= 256;
@@ -300,6 +303,10 @@ void LargeUIntIncrement(LargeUInt* this) {
     LargeUIntGrow(this);
     this->bytes_[this->num_bytes_ - 1] = carry;
   }
+}
+
+void LargeUIntIncrement(LargeUInt* this) {
+  LargeUIntAddByte(1, this);
 }
 
 void LargeUIntSub(const LargeUInt* that, LargeUInt* this) {

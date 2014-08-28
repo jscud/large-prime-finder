@@ -90,6 +90,9 @@ void LargeUIntByteShift(LargeUInt* this);
 // argument is set to the sum of this and that.
 void LargeUIntAdd(const LargeUInt* that, LargeUInt* this);
 
+// Adds a small number (less than 256) to the large unsigned integer.
+void LargeUIntAddByte(int byte, LargeUInt* this);
+
 // Adds 1 to the provided large unsigned integer.
 void LargeUIntIncrement(LargeUInt* this);
 
