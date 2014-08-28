@@ -264,6 +264,13 @@ void TestApproximateSquareRoot() {
   LargeUIntApproximateSquareRoot(&n, &root);
   CheckLargeUInt("0400_682A9F02", &root,
                  "Root of 1,934,725,265,902,144 should be 43,985,512");
+
+  // Add 1 to the previous square, should bump up to the next integer.
+  LargeUIntLoad(19, "0700_414A36549FDF06", &n);
+  LargeUIntApproximateSquareRoot(&n, &root);
+  CheckLargeUInt("0400_692A9F02", &root,
+                 "Root of 1,934,725,265,902,145 should be 43,985,513");
+
 }
 
 int main(void) {
