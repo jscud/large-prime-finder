@@ -423,3 +423,46 @@ void LargeUIntDivide(const LargeUInt* numerator, const LargeUInt* denominator,
   LargeUIntClone(&partial_numerator, remainder);
   LargeUIntTrim(remainder);
 }
+
+void LargeUIntApproximateSquareRoot(const LargeUInt* this, LargeUInt* root) {
+  LargeUInt two;
+  LargeUIntLoad(7, "0100_02", &two);
+
+  LargeUInt remainder;
+  LargeUInt estimate;
+  // Start by using an estimate of just above half of the input.
+  LargeUIntDivide(this, &two, &estimate, &remainder);
+  LargeUIntIncrement(&estimate);
+
+  LargeUInt quotient;
+  LargeUInt next_estimate;
+  next_estimate.num_bytes_ = 0;
+
+  int divided_evenly = 0;
+  int comparison;
+  while (1) {
+    LargeUIntDivide(this, &estimate, &quotient, &remainder);
+    if (remainder.num_bytes_ == 0) {
+      divided_evenly = 1;
+    } else {
+      divided_evenly = 0;
+    }
+    LargeUIntAdd(&estimate, &quotient);
+    LargeUIntDivide(&quotient, &two, &next_estimate, &remainder);
+
+    comparison = LargeUIntCompare(&next_estimate, &estimate);
+    if (comparison < 1) {
+      if (comparison < 0) {
+        divided_evenly = 0;
+      }
+      break;
+    }
+
+    LargeUIntClone(&next_estimate, &estimate);
+  }
+
+  LargeUIntClone(&estimate, root);
+  if (divided_evenly == 0) {
+    LargeUIntIncrement(root);
+  }
+}

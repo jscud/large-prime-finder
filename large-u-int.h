@@ -113,4 +113,9 @@ void LargeUIntMultiply(const LargeUInt* that, LargeUInt* this);
 void LargeUIntDivide(const LargeUInt* numerator, const LargeUInt* denominator,
                      LargeUInt* quotient, LargeUInt* remainder);
 
+// Finds an integer that is close to the square root of the first argument
+// without being less than the actual square root. Intended for a rough
+// overestimate of the square root.
+void LargeUIntApproximateSquareRoot(const LargeUInt* this, LargeUInt* root);
+
 #endif

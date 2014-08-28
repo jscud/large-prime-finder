@@ -235,6 +235,37 @@ void TestDivide() {
   CheckLargeUInt("0400_20BE900B", &r, "Remainder should be 194,035,232");
 }
 
+void TestApproximateSquareRoot() {
+  LargeUInt n, root;
+
+  LargeUIntLoad(7, "0100_04", &n);
+  LargeUIntApproximateSquareRoot(&n, &root);
+  CheckLargeUInt("0100_02", &root, "Approximate root of 4 should be 2");
+
+  LargeUIntLoad(7, "0100_09", &n);
+  LargeUIntApproximateSquareRoot(&n, &root);
+  CheckLargeUInt("0100_03", &root, "Approximate root of 9 should be 3");
+
+  LargeUIntLoad(7, "0100_64", &n);
+  LargeUIntApproximateSquareRoot(&n, &root);
+  CheckLargeUInt("0100_0A", &root, "Approximate root of 100 should be 10");
+
+  LargeUIntLoad(7, "0100_63", &n);
+  LargeUIntApproximateSquareRoot(&n, &root);
+  CheckLargeUInt("0100_0A", &root, "Approximate root of 99 should be 10");
+
+  LargeUIntLoad(9, "0200_B80B", &n);
+  LargeUIntApproximateSquareRoot(&n, &root);
+  CheckLargeUInt("0100_37", &root, "Approximate root of 3,000 should be 55");
+
+  // In base 10: 43985512 squared is 1934725265902144
+  // In base 16: 0x29F2A68 squared is 0x6DF9F54364A40
+  LargeUIntLoad(19, "0700_404A36549FDF06", &n);
+  LargeUIntApproximateSquareRoot(&n, &root);
+  CheckLargeUInt("0400_682A9F02", &root,
+                 "Root of 1,934,725,265,902,144 should be 43,985,512");
+}
+
 int main(void) {
   TestGetSetAndNumBytes();
   TestLoadAndStore();
@@ -246,5 +277,6 @@ int main(void) {
   TestSubAndDecrement();
   TestMultiply();
   TestDivide();
+  TestApproximateSquareRoot();
   printf("All tests passed\n");
 }
