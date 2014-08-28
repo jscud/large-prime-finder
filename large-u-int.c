@@ -426,7 +426,8 @@ void LargeUIntDivide(const LargeUInt* numerator, const LargeUInt* denominator,
 
 void LargeUIntApproximateSquareRoot(const LargeUInt* this, LargeUInt* root) {
   LargeUInt two;
-  LargeUIntLoad(7, "0100_02", &two);
+  two.num_bytes_ = 1;
+  two.bytes_[0] = 2;
 
   LargeUInt remainder;
   LargeUInt estimate;
