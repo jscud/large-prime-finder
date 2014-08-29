@@ -22,6 +22,11 @@
 
 #define MAX_NUM_LARGE_U_INT_BYTES 30
 
+// A string buffer to hold a LargeUInt's base 10 represenation could be up to
+// three times the number of bytes with one more byte for the trailing null
+// terminator. This should be a safe overestimate.
+#define BASE_10_LARGE_U_INT_BUFFER_SIZE MAX_NUM_LARGE_U_INT_BYTES * 3 + 1
+
 typedef struct {
   int num_bytes_;
   uint8_t bytes_[MAX_NUM_LARGE_U_INT_BYTES];

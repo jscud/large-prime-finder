@@ -164,7 +164,7 @@ void LargeUIntStore(const LargeUInt* this, int buffer_size, char* buffer) {
 
 void LargeUIntBase10Store(
     const LargeUInt* this, int buffer_size, char* buffer) {
-  char internal_buffer[100];
+  char internal_buffer[BASE_10_LARGE_U_INT_BUFFER_SIZE];
   int num_digits = 0;
   LargeUInt reduced_this;
   LargeUInt quotient;
