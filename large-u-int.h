@@ -41,6 +41,11 @@ typedef struct {
 // would be represented as 0300_054A3D.
 void LargeUIntPrint(const LargeUInt* this, FILE* out);
 
+// Prints out the base 10 (decimal) equivalent of the value stored in the
+// large unsigned interger. This lists high order digits first as one would
+// typically see an integer written.
+void LargeUIntBase10Print(const LargeUInt* this, FILE* out);
+
 // Reads the next available LargeUInt from the file and stores the value in
 // the provided LargeUInt.
 void LargeUIntRead(FILE* in, LargeUInt* this);

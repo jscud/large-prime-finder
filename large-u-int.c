@@ -52,6 +52,12 @@ void LargeUIntPrint(const LargeUInt* this, FILE* out) {
   }
 }
 
+void LargeUIntBase10Print(const LargeUInt* this, FILE* out) {
+  char str_buffer[BASE_10_LARGE_U_INT_BUFFER_SIZE];
+  LargeUIntBase10Store(this, BASE_10_LARGE_U_INT_BUFFER_SIZE, str_buffer);
+  fprintf(out, "%s", str_buffer);
+}
+
 // Processes one input character to set the value of this. Returns 1 to
 // continue parsing the 0 when we've reached the end of this large unsigned
 // integer. The starting state is -1.
