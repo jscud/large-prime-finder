@@ -162,6 +162,36 @@ void LargeUIntStore(const LargeUInt* this, int buffer_size, char* buffer) {
   buffer[j] = '\0';
 }
 
+void LargeUIntBase10Store(
+    const LargeUInt* this, int buffer_size, char* buffer) {
+  char internal_buffer[100];
+  int num_digits = 0;
+  LargeUInt reduced_this;
+  LargeUInt quotient;
+  LargeUInt remainder;
+  LargeUInt ten;
+  ten.num_bytes_ = 1;
+  ten.bytes_[0] = 10;
+
+  LargeUIntDivide(this, &ten, &quotient, &remainder);
+  while (remainder.num_bytes_ > 0) {
+    internal_buffer[num_digits] = remainder.bytes_[0];
+    LargeUIntClone(&quotient, &reduced_this);
+    num_digits++;
+    LargeUIntDivide(&reduced_this, &ten, &quotient, &remainder);
+  }
+
+  if (num_digits > buffer_size - 1) {
+    ErrorOut("Insufficient space in buffer to store base ten string.");
+  }
+
+  int i;
+  for (i = 0; i < num_digits; i++) {
+    buffer[i] = '0' + internal_buffer[num_digits - i - 1];
+  }
+  buffer[i] = '\0';
+}
+
 void LargeUIntLoad(int buffer_size, char* buffer, LargeUInt* this) {
   if (buffer == NULL) {
     ErrorOut("Invalid input buffer, unable to load LargeUInt.");

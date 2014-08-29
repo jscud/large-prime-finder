@@ -61,6 +61,14 @@ void TestLoadAndStore() {
   Check(0 == LargeUIntGetByte(1, &a_int), "Second loaded byte should be 0");
   Check(7 == LargeUIntGetByte(2, &a_int), "Third loaded byte should be 7");
   CheckLargeUInt(example, &a_int, "String buffer should match example");
+
+  LargeUIntLoad(7, "0100_01", &a_int);
+  LargeUIntBase10Store(&a_int, 30, a_str);
+  Check(0 == strcmp("1", a_str), "Base 10 string should be \"1\"");
+
+  LargeUIntLoad(9, "0200_317F", &a_int);
+  LargeUIntBase10Store(&a_int, 30, a_str);
+  Check(0 == strcmp("32561", a_str), "Base 10 string should be \"32561\"");
 }
 
 void TestGrowAndTrim() {

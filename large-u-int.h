@@ -48,6 +48,11 @@ int LargeUIntBufferSize(const LargeUInt* this);
 // provided string buffer.
 void LargeUIntStore(const LargeUInt* this, int buffer_size, char* buffer);
 
+// Writes the number as decimal text, with the high order digits listed
+// first.
+void LargeUIntBase10Store(
+    const LargeUInt* this, int buffer_size, char* buffer);
+
 // Reads the text representation of a large unsigned integer from a string
 // and stores loaded value into the provided location.
 void LargeUIntLoad(int buffer_size, char* buffer, LargeUInt* this);
