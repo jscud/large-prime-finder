@@ -1,0 +1,13 @@
+# Big list of primes!
+# The prime numbers are listed one to each line in a format designed to
+# be easily consumed by a big integer implementation. Format as follows:
+# Number of bytes in the number as a hex encoded little endian 32 bit int.
+# Following the 8 characters indicating the number of bytes, the bytes of
+# the number follow. Each byte is 2 hex characters, and the bytes are listed
+# least significant first. 
+0100_02 # int value: 2
+0100_03 # int value: 3
+0100_05 # int value: 5
+0100_07 # int value: 7
+0100_0B # int value: 11
+0100_0D # int value: 13
