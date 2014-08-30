@@ -37,7 +37,7 @@ void BigIntPrint(uint_fast64_t x, FILE *out) {
     exit(1);
   }
 
-  fprintf(out, "0%c000000", HEX_BYTES[num_bytes]);
+  fprintf(out, "0%c00_", HEX_BYTES[num_bytes]);
   uint_fast64_t x_copy = x;
   while (x > 0) {
     fprintf(out, "%c%c", HEX_BYTES[x >> 4 & 0x0F], HEX_BYTES[x & 0x0F]);
@@ -129,7 +129,7 @@ uint_fast64_t LoadNextPrime(FILE* primes) {
         break;
       case 3:
         num_bytes += current_value << 8;
-        state = 4;
+        state = 8;
         break;
       case 4:
         num_bytes += current_value << 20;
