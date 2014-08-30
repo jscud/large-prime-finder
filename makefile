@@ -16,8 +16,15 @@ large-u-int-resumable-prime-finder: large-u-int-resumable-prime-finder.o large-u
 large-u-int-resumable-prime-finder.o: large-u-int-resumable-prime-finder.c large-u-int.h
 	gcc -c large-u-int-resumable-prime-finder.c
 
+# Random Prime Finder to find a single very large prime.
+random-prime-finder: random-prime-finder.o large-u-int.o
+	gcc random-prime-finder.o large-u-int.o -o random-prime-finder
+
+random-prime-finder.o: random-prime-finder.c large-u-int.h
+	gcc -c random-prime-finder.c
+
 large-u-int.o: large-u-int.c large-u-int.h
 	gcc -c large-u-int.c
 
 clean:
-	rm *.o large-u-int-test resumable-prime-finder large-u-int-resumable-prime-finder
+	rm *.o large-u-int-test resumable-prime-finder large-u-int-resumable-prime-finder random-prime-finder
