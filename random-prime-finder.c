@@ -38,8 +38,27 @@ void FindNearbyPrime(LargeUInt* candidate) {
   LargeUInt quotient;
   LargeUInt remainder;
 
+  // Establish the limit of the highest divisor we need to try.
   LargeUInt max_divisor;
   LargeUIntApproximateSquareRoot(candidate, &max_divisor);
+
+  // To report progress, track when we have tried each 2% of the possible
+  // divisors.
+  LargeUInt one_fiftieth_max;
+  LargeUInt next_reporting_milestone;
+  LargeUInt fifty;
+  LargeUIntInit(1, &fifty);
+  LargeUIntSetByte(50, 0, &fifty);
+  LargeUIntDivide(&max_divisor, &fifty, &one_fiftieth_max, &remainder);
+  LargeUIntClone(&one_fiftieth_max, &next_reporting_milestone);
+
+  printf("Starting with possible prime ");
+  LargeUIntBase10Print(candidate, stdout);
+  printf("\nProgress: 0|-------20|-------40|-------60|-------80|------100|");
+  printf("\n           x");
+  fflush(stdout);
+
+  // Try divisors starting with the smallest possible: 3.
   LargeUInt divisor;
   LargeUIntInit(1, &divisor);
   LargeUIntSetByte(3, 0, &divisor);
@@ -49,9 +68,26 @@ void FindNearbyPrime(LargeUInt* candidate) {
       LargeUIntAddByte(2, candidate);
       LargeUIntInit(1, &divisor);
       LargeUIntSetByte(3, 0, &divisor);
+
+      printf("\nTrying a new possible prime ");
+      LargeUIntBase10Print(candidate, stdout);
+      printf("\nProgress: 0|-------20|-------40|-------60|-------80|");
+      printf("------100|\n           x");
+      fflush(stdout);
+
+      // New candidate so find a new cap for divisors.
       LargeUIntApproximateSquareRoot(candidate, &max_divisor);
+
+      // Report the new candidate and reset our progress reporting.
+      LargeUIntDivide(&max_divisor, &fifty, &one_fiftieth_max, &remainder);
+      LargeUIntClone(&one_fiftieth_max, &next_reporting_milestone);
     } else {
       LargeUIntAddByte(2, &divisor);
+      if (LargeUIntCompare(&divisor, &next_reporting_milestone) < 1) {
+        printf("x");
+        fflush(stdout);
+        LargeUIntAdd(&one_fiftieth_max, &next_reporting_milestone);
+      }
     }
   }
 
@@ -69,7 +105,9 @@ void GenerateRandomPrime(int num_bytes) {
   LargeUInt candidate;
   FillCandidateRandomly(num_bytes, &candidate);
   FindNearbyPrime(&candidate);
+  printf("\nPrime:\n");
   PrintPrime(&candidate, stdout);
+  printf("\n");
 }
 
 int main(int argc, char *argv[]) {
