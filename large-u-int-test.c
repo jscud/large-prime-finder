@@ -69,6 +69,10 @@ void TestLoadAndStore() {
   LargeUIntLoad(9, "0200_317F", &a_int);
   LargeUIntBase10Store(&a_int, 30, a_str);
   Check(0 == strcmp("32561", a_str), "Base 10 string should be \"32561\"");
+
+  LargeUIntLoad(9, "0100_65", &a_int);
+  LargeUIntBase10Store(&a_int, 30, a_str);
+  Check(0 == strcmp("101", a_str), "Base 10 string should be \"101\"");
 }
 
 void TestGrowAndTrim() {

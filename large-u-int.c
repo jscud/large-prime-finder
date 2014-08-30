@@ -180,8 +180,12 @@ void LargeUIntBase10Store(
   ten.bytes_[0] = 10;
 
   LargeUIntDivide(this, &ten, &quotient, &remainder);
-  while (remainder.num_bytes_ > 0) {
-    internal_buffer[num_digits] = remainder.bytes_[0];
+  while (remainder.num_bytes_ > 0 || quotient.num_bytes_ > 0) {
+    if (remainder.num_bytes_ == 0) {
+      internal_buffer[num_digits] = 0;
+    } else {
+      internal_buffer[num_digits] = remainder.bytes_[0];
+    }
     LargeUIntClone(&quotient, &reduced_this);
     num_digits++;
     LargeUIntDivide(&reduced_this, &ten, &quotient, &remainder);
