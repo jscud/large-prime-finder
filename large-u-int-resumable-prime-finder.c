@@ -21,6 +21,13 @@
 #include <string.h>
 #include <stdint.h>
 
+void PrintPrime(LargeUInt* prime, FILE* out) {
+  LargeUIntPrint(prime, out);
+  fprintf(out, " # int value: ");
+  LargeUIntBase10Print(prime, out);
+  fprintf(out, "\n");
+}
+
 void FindNearbyPrime(LargeUInt* candidate) {
   if (LargeUIntGetByte(0, candidate) % 2 == 0) {
     LargeUIntIncrement(candidate);
@@ -72,8 +79,7 @@ void FindHighestPrime(char* filename, LargeUInt* prime) {
 
 void AppendPrime(char* filename, LargeUInt* prime) {
   FILE* primes = fopen(filename, "a");
-  LargeUIntPrint(prime, primes);
-  fprintf(primes, "\n");
+  PrintPrime(prime, primes);
   fclose(primes);
 }
 
@@ -83,7 +89,7 @@ void GeneratePrimes(char* filename) {
   printf("Looking for highest prime already found.\n");
   FindHighestPrime(filename, &candidate);
   printf("Starting from highest prime found so far: ");
-  LargeUIntPrint(&candidate, stdout);
+  PrintPrime(&candidate, stdout);
   printf("\n");
 
   // Add two to start trying new primes.
@@ -93,8 +99,7 @@ void GeneratePrimes(char* filename) {
     FindNearbyPrime(&candidate);
     AppendPrime(filename, &candidate);
     printf("Found prime: ");
-    LargeUIntPrint(&candidate, stdout);
-    printf("\n");
+    PrintPrime(&candidate, stdout);
     LargeUIntAddByte(2, &candidate);
   }
 }
