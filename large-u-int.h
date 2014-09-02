@@ -99,7 +99,7 @@ void LargeUIntClone(const LargeUInt* that, LargeUInt* this);
 
 // Adds a new zero byte at the low order end of the integer and shifts
 // existing bytes up. Equivalent to multiplying by 256.
-void LargeUIntByteShift(LargeUInt* this);
+void LargeUIntByteShiftInc(LargeUInt* this);
 
 // Adds the first argument into the second argument. The value of the second
 // argument is set to the sum of this and that.

@@ -129,11 +129,11 @@ void TestClone() {
 void TestShift() {
   LargeUInt a;
   LargeUIntLoad(11, "0300_AABBCC", &a);
-  LargeUIntByteShift(&a);
+  LargeUIntByteShiftInc(&a);
   CheckLargeUInt("0400_00AABBCC", &a, "Shift should add low order zero");
 
   LargeUIntLoad(5, "0000_", &a);
-  LargeUIntByteShift(&a);
+  LargeUIntByteShiftInc(&a);
   CheckLargeUInt("0000_", &a, "Shifting zero should produce zero");
 }
 

@@ -281,7 +281,7 @@ void LargeUIntClone(const LargeUInt* that, LargeUInt* this) {
   memmove(this->bytes_, that->bytes_, this->num_bytes_);
 }
 
-void LargeUIntByteShift(LargeUInt* this) {
+void LargeUIntByteShiftInc(LargeUInt* this) {
   if (this->num_bytes_ == MAX_NUM_LARGE_U_INT_BYTES) {
     ErrorOut("Unable to byte shift large integer.");
   }
