@@ -249,6 +249,20 @@ void TestDivide() {
   LargeUIntDivide(&n, &d, &q, &r);
   CheckLargeUInt("0400_C5AFFE7B", &q, "Quotient should be 2,080,288,709");
   CheckLargeUInt("0400_20BE900B", &r, "Remainder should be 194,035,232");
+
+  // In base 10: 694894489 / 53 = 13111216 r 41
+  LargeUIntLoad(13, "0400_993F6B29", &n);
+  LargeUIntLoad(7, "0100_35", &d);
+  LargeUIntDivide(&n, &d, &q, &r);
+  CheckLargeUInt("0300_B00FC8", &q, "Quotient should be 13,111,216");
+  CheckLargeUInt("0100_29", &r, "Remainder should be 41");
+
+  // In base 10: 694894489 / 265 = 2622243 r 94
+  LargeUIntLoad(13, "0400_993F6B29", &n);
+  LargeUIntLoad(9, "0200_0901", &d);
+  LargeUIntDivide(&n, &d, &q, &r);
+  CheckLargeUInt("0300_230328", &q, "Quotient should be 2,622,243");
+  CheckLargeUInt("0100_5E", &r, "Remainder should be 94");
 }
 
 void TestApproximateSquareRoot() {
@@ -286,7 +300,6 @@ void TestApproximateSquareRoot() {
   LargeUIntApproximateSquareRoot(&n, &root);
   CheckLargeUInt("0400_692A9F02", &root,
                  "Root of 1,934,725,265,902,145 should be 43,985,513");
-
 }
 
 int main(void) {
