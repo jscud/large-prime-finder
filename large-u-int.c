@@ -294,6 +294,20 @@ void LargeUIntByteShiftInc(LargeUInt* this) {
   LargeUIntTrim(this);
 }
 
+int LargeUIntByteShiftDec(LargeUInt* this) {
+  if (this->num_bytes_ < 1) {
+    ErrorOut("Unable to decrease shift an integer of zero.");
+  }
+
+  int lowest_byte = this->bytes_[0];
+  int i;
+  for (i = 0; i < this->num_bytes_ - 1; i++) {
+    this->bytes_[i] = this->bytes_[i + 1];
+  }
+  this->num_bytes_--;
+  return lowest_byte;
+}
+
 void LargeUIntAdd(const LargeUInt* that, LargeUInt* this) {
   int carry = 0;
   int value = 0;

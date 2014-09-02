@@ -135,6 +135,16 @@ void TestShift() {
   LargeUIntLoad(5, "0000_", &a);
   LargeUIntByteShiftInc(&a);
   CheckLargeUInt("0000_", &a, "Shifting zero should produce zero");
+
+  LargeUIntLoad(11, "0300_AABBCC", &a);
+  int lowest = LargeUIntByteShiftDec(&a);
+  Check(170 == lowest, "Low byte should have been returned");
+  CheckLargeUInt("0200_BBCC", &a, "Shift should remove lowest byte");
+
+  LargeUIntLoad(7, "0100_01", &a);
+  lowest = LargeUIntByteShiftDec(&a);
+  Check(1 == lowest, "Returned low byte should be 1");
+  Check(0 == LargeUIntNumBytes(&a), "ShiftDec should zero the integer");
 }
 
 void TestAddAndIncrement() {

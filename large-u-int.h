@@ -101,6 +101,10 @@ void LargeUIntClone(const LargeUInt* that, LargeUInt* this);
 // existing bytes up. Equivalent to multiplying by 256.
 void LargeUIntByteShiftInc(LargeUInt* this);
 
+// Reduces the number of bytes in the integer by shifting all bytes into a
+// lower position. The lowest order byte is removed and its value returned. 
+int LargeUIntByteShiftDec(LargeUInt* this);
+
 // Adds the first argument into the second argument. The value of the second
 // argument is set to the sum of this and that.
 void LargeUIntAdd(const LargeUInt* that, LargeUInt* this);
