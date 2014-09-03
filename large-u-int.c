@@ -276,6 +276,18 @@ int LargeUIntCompare(const LargeUInt* this, const LargeUInt* that) {
   return 0;
 }
 
+int LargeUIntLessThan(const LargeUInt* this, const LargeUInt* that) {
+  return LargeUIntCompare(this, that) == 1;
+}
+
+int LargeUIntLessThanOrEqual(const LargeUInt* this, const LargeUInt* that) {
+  return LargeUIntCompare(this, that) > -1;
+}
+
+int LargeUIntEqual(const LargeUInt* this, const LargeUInt* that) {
+  return LargeUIntCompare(this, that) == 0;
+}
+
 void LargeUIntClone(const LargeUInt* that, LargeUInt* this) {
   this->num_bytes_ = that->num_bytes_;
   memmove(this->bytes_, that->bytes_, this->num_bytes_);

@@ -117,6 +117,14 @@ void TestCompare() {
   LargeUIntLoad(13, "0400_49531D1C", &b);
   Check(-1 == LargeUIntCompare(&a, &b),
         "0xD0... should be greater than 0x1C...");
+
+  Check(1 == LargeUIntLessThan(&b, &a), "0x1C... is less than 0xD0...");
+  Check(0 == LargeUIntLessThan(&a, &b), "0xD0... is not less than 0x1C...");
+  
+  Check(1 == LargeUIntEqual(&b, &b), "0x1C... should equal itself");
+  Check(1 == LargeUIntLessThanOrEqual(&b, &b),
+        "0x1C... is less than or equal to itself");
+  Check(0 == LargeUIntLessThan(&b, &b), "0x1C... is not less than itself");
 }
 
 void TestClone() {

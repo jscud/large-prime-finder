@@ -94,6 +94,16 @@ int LargeUIntNumBytes(const LargeUInt* this);
 // this > that  --> -1
 int LargeUIntCompare(const LargeUInt* this, const LargeUInt* that);
 
+// Returns 1 if the first argument is less than the second, otherwise 0.
+int LargeUIntLessThan(const LargeUInt* this, const LargeUInt* that);
+
+// Returns 1 if the first argument is less than the second or if both are
+// equal. Otherwise returns 0.
+int LargeUIntLessThanOrEqual(const LargeUInt* this, const LargeUInt* that);
+
+// Returns 1 if both arguments are equal, otherwise 0.
+int LargeUIntEqual(const LargeUInt* this, const LargeUInt* that);
+
 // Copies the value from the first argument into the second argument.
 void LargeUIntClone(const LargeUInt* that, LargeUInt* this);
 
