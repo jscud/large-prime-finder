@@ -275,6 +275,29 @@ void TestDivide() {
   CheckLargeUInt("0100_5E", &r, "Remainder should be 94");
 }
 
+void TestMod() {
+  LargeUInt n, d, r;
+  LargeUIntLoad(7, "0100_0F", &n);
+  LargeUIntLoad(7, "0100_05", &d);
+  LargeUIntMod(&n, &d, &r);
+  CheckLargeUInt("0000_", &r, "Mod remainder should be 0");
+
+  LargeUIntLoad(7, "0100_15", &n);
+  LargeUIntLoad(7, "0100_05", &d);
+  LargeUIntMod(&n, &d, &r);
+  CheckLargeUInt("0100_01", &r, "Mod remainder should be 1");
+
+  LargeUIntLoad(7, "0100_0E", &n);
+  LargeUIntLoad(7, "0100_05", &d);
+  LargeUIntMod(&n, &d, &r);
+  CheckLargeUInt("0100_04", &r, "Mod remainder should be 4");
+
+  LargeUIntLoad(7, "0100_07", &n);
+  LargeUIntLoad(7, "0100_08", &d);
+  LargeUIntMod(&n, &d, &r);
+  CheckLargeUInt("0100_07", &r, "Mod remainder should be 7");
+}
+
 void TestApproximateSquareRoot() {
   LargeUInt n, root;
 
@@ -323,6 +346,7 @@ int main(void) {
   TestSubAndDecrement();
   TestMultiply();
   TestDivide();
+  TestMod();
   TestApproximateSquareRoot();
   printf("All tests passed\n");
 }

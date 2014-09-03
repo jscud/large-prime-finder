@@ -135,6 +135,11 @@ void LargeUIntMultiply(const LargeUInt* that, LargeUInt* this);
 void LargeUIntDivide(const LargeUInt* numerator, const LargeUInt* denominator,
                      LargeUInt* quotient, LargeUInt* remainder);
 
+// Performs modulus on the first argument. The remainder of first argument
+// modulo the second argument is stored in the third argument.
+void LargeUIntMod(const LargeUInt* numerator, const LargeUInt* divisor,
+                  LargeUInt* remainder);
+
 // Finds an integer that is close to the square root of the first argument
 // without being less than the actual square root. Intended for a rough
 // overestimate of the square root.

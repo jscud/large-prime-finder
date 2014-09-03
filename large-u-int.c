@@ -461,6 +461,23 @@ void LargeUIntDivide(const LargeUInt* numerator, const LargeUInt* denominator,
   LargeUIntTrim(remainder);
 }
 
+void LargeUIntMod(const LargeUInt* numerator, const LargeUInt* divisor,
+                  LargeUInt* remainder) {
+  if (numerator->num_bytes_ == 0) {
+    remainder->num_bytes_ = 0;
+    return;
+  }
+
+  LargeUIntClone(numerator, remainder);
+
+  // Divide by repeating subtractions. Inneffiecient, but easy to verify.
+  while (LargeUIntCompare(remainder, divisor) <= 0) {
+    LargeUIntSub(divisor, remainder);
+  }
+
+  LargeUIntTrim(remainder);
+}
+
 void LargeUIntApproximateSquareRoot(const LargeUInt* this, LargeUInt* root) {
   LargeUInt two;
   two.num_bytes_ = 1;
