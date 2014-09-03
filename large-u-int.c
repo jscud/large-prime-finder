@@ -482,9 +482,16 @@ void LargeUIntMod(const LargeUInt* numerator, const LargeUInt* divisor,
 
   LargeUIntClone(numerator, remainder);
 
-  // Divide by repeating subtractions. Inneffiecient, but easy to verify.
-  while (LargeUIntCompare(remainder, divisor) <= 0) {
-    LargeUIntSub(divisor, remainder);
+  LargeUInt repeated_divisor;
+  LargeUIntClone(divisor, &repeated_divisor);
+  while (LargeUIntLessThanOrEqual(divisor, remainder)) {
+    while (remainder->num_bytes_ - 1 > repeated_divisor.num_bytes_) {
+      LargeUIntByteShiftInc(&repeated_divisor);
+    }
+    while (LargeUIntLessThanOrEqual(&repeated_divisor, remainder)) {
+      LargeUIntSub(&repeated_divisor, remainder);
+    }
+    LargeUIntClone(divisor, &repeated_divisor);
   }
 
   LargeUIntTrim(remainder);

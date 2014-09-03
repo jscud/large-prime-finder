@@ -304,6 +304,26 @@ void TestMod() {
   LargeUIntLoad(7, "0100_08", &d);
   LargeUIntMod(&n, &d, &r);
   CheckLargeUInt("0100_07", &r, "Mod remainder should be 7");
+
+  LargeUIntLoad(17, "0600_040303030303", &n);
+  LargeUIntLoad(7, "0100_03", &d);
+  LargeUIntMod(&n, &d, &r);
+  CheckLargeUInt("0100_01", &r, "Mod 3 remainder should be 1");
+
+  LargeUIntLoad(17, "0600_020306030903", &n);
+  LargeUIntLoad(7, "0100_03", &d);
+  LargeUIntMod(&n, &d, &r);
+  CheckLargeUInt("0100_02", &r, "Mod 3 remainder should be 2");
+
+  LargeUIntLoad(13, "0400_993F6B29", &n);
+  LargeUIntLoad(9, "0200_0901", &d);
+  LargeUIntMod(&n, &d, &r);
+  CheckLargeUInt("0100_5E", &r, "Mod remainder should be 94");
+
+  LargeUIntLoad(21, "0800_4DBC7E6F6A0F9E0D", &n);
+  LargeUIntLoad(13, "0400_49531D1C", &d);
+  LargeUIntMod(&n, &d, &r);
+  CheckLargeUInt("0400_20BE900B", &r, "Mod remainder should be 194,035,232");
 }
 
 void TestApproximateSquareRoot() {
