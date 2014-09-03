@@ -63,7 +63,7 @@ void FindNearbyPrime(LargeUInt* candidate) {
   LargeUIntInit(1, &divisor);
   LargeUIntSetByte(3, 0, &divisor);
   while (LargeUIntCompare(&divisor, &max_divisor) >= 0) {
-    LargeUIntDivide(candidate, &divisor, &quotient, &remainder);
+    LargeUIntMod(candidate, &divisor, &remainder);
     if (LargeUIntNumBytes(&remainder) == 0) {
       LargeUIntAddByte(2, candidate);
       LargeUIntInit(1, &divisor);
