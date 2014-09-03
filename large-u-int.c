@@ -463,10 +463,32 @@ void LargeUIntDivide(const LargeUInt* numerator, const LargeUInt* denominator,
 
   LargeUIntClone(numerator, remainder);
 
-  // Divide by counting subtractions. Inneffiecient, but easy to verify.
-  while (LargeUIntCompare(remainder, denominator) <= 0) {
-    LargeUIntIncrement(quotient);
-    LargeUIntSub(denominator, remainder);
+  LargeUInt repeated_divisor;
+  LargeUIntClone(denominator, &repeated_divisor);
+
+  LargeUInt quotient_segment;
+  int divisor_shifts;
+  int i;
+
+  while (LargeUIntLessThanOrEqual(denominator, remainder)) {
+    divisor_shifts = 0;
+    while (remainder->num_bytes_ - 1 > repeated_divisor.num_bytes_) {
+      divisor_shifts++;
+      LargeUIntByteShiftInc(&repeated_divisor);
+    }
+    quotient_segment.num_bytes_ = 1;
+    quotient_segment.bytes_[0] = 0;
+    while (LargeUIntLessThanOrEqual(&repeated_divisor, remainder)) {
+      LargeUIntSub(&repeated_divisor, remainder);
+      LargeUIntIncrement(&quotient_segment);
+    }
+    LargeUIntClone(denominator, &repeated_divisor);
+
+    // Add the number of subtractions at the correct byte in the quotient.
+    for (i = 0; i < divisor_shifts; i++) {
+      LargeUIntByteShiftInc(&quotient_segment);
+    }
+    LargeUIntAdd(&quotient_segment, quotient);
   }
 
   LargeUIntTrim(quotient);
