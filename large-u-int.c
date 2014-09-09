@@ -472,9 +472,14 @@ void LargeUIntDivide(const LargeUInt* numerator, const LargeUInt* denominator,
 
   while (LargeUIntLessThanOrEqual(denominator, remainder)) {
     divisor_shifts = 0;
-    while (remainder->num_bytes_ - 1 > repeated_divisor.num_bytes_) {
+    while (remainder->num_bytes_ > repeated_divisor.num_bytes_) {
       divisor_shifts++;
       LargeUIntByteShiftInc(&repeated_divisor);
+      if (LargeUIntLessThan(remainder, &repeated_divisor)) {
+        divisor_shifts--;
+        LargeUIntByteShiftDec(&repeated_divisor);
+        break;
+      }
     }
     quotient_segment.num_bytes_ = 1;
     quotient_segment.bytes_[0] = 0;
