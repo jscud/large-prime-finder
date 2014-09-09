@@ -54,6 +54,8 @@ void FindNearbyPrime(LargeUInt* candidate) {
 
   printf("Starting with possible prime ");
   LargeUIntBase10Print(candidate, stdout);
+  printf("\nMaximum divisor: ");
+  LargeUIntPrint(&max_divisor, stdout);
   printf("\nProgress: 0|-------20|-------40|-------60|-------80|------100|");
   printf("\n           x");
   fflush(stdout);
@@ -71,6 +73,8 @@ void FindNearbyPrime(LargeUInt* candidate) {
 
       printf("\nTrying a new possible prime ");
       LargeUIntBase10Print(candidate, stdout);
+      printf("\nMaximum divisor: ");
+      LargeUIntPrint(&max_divisor, stdout);
       printf("\nProgress: 0|-------20|-------40|-------60|-------80|");
       printf("------100|\n           x");
       fflush(stdout);
