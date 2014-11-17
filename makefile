@@ -23,8 +23,15 @@ random-prime-finder: random-prime-finder.o large-u-int.o
 random-prime-finder.o: random-prime-finder.c large-u-int.h
 	gcc -c random-prime-finder.c
 
+# Next Prime Finder to find a single prime from a starting integer.
+next-prime-finder: next-prime-finder.o large-u-int.o
+	gcc next-prime-finder.o large-u-int.o -o next-prime-finder
+
+next-prime-finder.o: next-prime-finder.c large-u-int.h
+	gcc -c next-prime-finder.c
+
 large-u-int.o: large-u-int.c large-u-int.h
 	gcc -c large-u-int.c
 
 clean:
-	rm *.o large-u-int-test resumable-prime-finder large-u-int-resumable-prime-finder random-prime-finder
+	rm *.o large-u-int-test resumable-prime-finder large-u-int-resumable-prime-finder random-prime-finder next-prime-finder
