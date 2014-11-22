@@ -40,4 +40,12 @@ void BitUIntClone(const BitUInt* that, BitUInt* this);
 // Removes leading zeros from the binary unsigned integer.
 void BitUIntTrim(BitUInt* this);
 
+// Double the value of the unsigned integer.
+void BitUIntDouble(BitUInt* this);
+
+// Reduces the value of the insiged integer to half and returns the low order
+// bit from the binary number which has been dropped.
+int BitUIntHalve(BitUInt* this);
+
+
 #endif

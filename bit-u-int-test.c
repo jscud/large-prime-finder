@@ -26,6 +26,12 @@ void Check(int condition, char* message) {
   }
 }
 
+void CheckBitUInt(char* expected, BitUInt* this, char* message) {
+  char buffer[100];
+  BitUIntStore(this, 100, buffer);
+  Check(0 == strncmp(expected, buffer, 100), message);
+}
+
 void TestLoadAndStore() {
   BitUInt a;
 
@@ -72,8 +78,25 @@ void TestClone() {
   Check(b.num_bits == 5, "cloned num bits should be 5");
 }
 
+void TestDoubleAndHalve() {
+  BitUInt a;
+  char* example = "11101";
+  BitUIntLoad(strlen(example), example, &a);
+  BitUIntDouble(&a);
+  Check(a.num_bits == 6, "doubled num bits should be 6");
+  CheckBitUInt("011101", &a, "doubled bits should be 011101");
+
+  int dropped = BitUIntHalve(&a);
+  Check(0 == dropped, "first halve should yield a 0");
+  CheckBitUInt("11101", &a, "halved bits should be back to 11101");
+  dropped = BitUIntHalve(&a);
+  CheckBitUInt("1101", &a, "halved bits should be 1101");
+  Check(1 == dropped, "second halve should yield a 1");
+}
+
 int main() {
   TestLoadAndStore();
   TestClone();
+  TestDoubleAndHalve();
   printf("All tests passed\n");
 }

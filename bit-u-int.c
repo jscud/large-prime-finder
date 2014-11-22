@@ -57,3 +57,27 @@ void BitUIntTrim(BitUInt* this) {
     this->num_bits--;
   }
 }
+
+void BitUIntDouble(BitUInt* this) {
+  assert(this->num_bits < MAX_NUM_BIT_U_INT_BITS);
+  int i;
+  for (i = this->num_bits; i > 1; i--) {
+    this->bits[i + 1] = this->bits[i];
+  }
+  this->bits[0] = 0;
+  this->num_bits++;
+}
+
+int BitUIntHalve(BitUInt* this) {
+  if (this->num_bits > 0) {
+    int low_bit = this->bits[0];
+    int i;
+    for (i = 1; i < this->num_bits; i++) {
+      this->bits[i - 1] = this->bits[i];
+    }
+    this->num_bits--;
+    return low_bit;
+  } else {
+    return 0;
+  }
+}
