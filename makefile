@@ -45,4 +45,4 @@ bit-u-int.o: bit-u-int.c bit-u-int.h
 
 
 clean:
-	rm *.o large-u-int-test resumable-prime-finder large-u-int-resumable-prime-finder random-prime-finder next-prime-finder bit-u-int-test
+	rm -f *.o large-u-int-test resumable-prime-finder large-u-int-resumable-prime-finder random-prime-finder next-prime-finder bit-u-int-test
