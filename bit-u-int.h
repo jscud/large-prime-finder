@@ -30,4 +30,7 @@ typedef struct {
 // and stores loaded value into the provided location.
 void BitUIntLoad(int buffer_size, char* buffer, BitUInt* this);
 
+// Removes leading zeros from the binary unsigned integer.
+void BitUIntTrim(BitUInt* this);
+
 #endif

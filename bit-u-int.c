@@ -32,4 +32,11 @@ void BitUIntLoad(int buffer_size, char* buffer, BitUInt* this) {
       break;
     }
   }
+  BitUIntTrim(this);
+}
+
+void BitUIntTrim(BitUInt* this) {
+  while (this->bits[this->num_bits - 1] == 0) {
+    this->num_bits--;
+  }
 }

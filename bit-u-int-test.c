@@ -43,6 +43,12 @@ void TestLoad() {
   Check(a.bits[1] == 0, "loaded bit 1 should be 0");
   Check(a.bits[3] == 1, "loaded bit 2 should be 1");
   Check(a.num_bits == 3, "loaded num bits should be 3");
+
+  example = "010000";
+  BitUIntLoad(strlen(example), example, &a);
+  Check(a.bits[0] == 0, "load and trim bit 0 should be 0");
+  Check(a.bits[1] == 1, "load and trim bit 1 should be 1");
+  Check(a.num_bits == 2, "loaded num bits should be 2");
 }
 
 int main() {
