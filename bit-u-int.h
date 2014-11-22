@@ -34,6 +34,9 @@ void BitUIntLoad(int buffer_size, char* buffer, BitUInt* this);
 // provided string buffer.
 void BitUIntStore(const BitUInt* this, int buffer_size, char* buffer);
 
+// Copies the value from the first argument into the second argument.
+void BitUIntClone(const BitUInt* that, BitUInt* this);
+
 // Removes leading zeros from the binary unsigned integer.
 void BitUIntTrim(BitUInt* this);
 

@@ -57,7 +57,23 @@ void TestLoadAndStore() {
         "String buffer should contain 01");
 }
 
+void TestClone() {
+  BitUInt a;
+  BitUInt b;
+
+  char* example = "11101";
+  BitUIntLoad(strlen(example), example, &a);
+  BitUIntClone(&a, &b);
+  Check(b.bits[0] == 1, "clone bit 0 should be 1");
+  Check(b.bits[1] == 1, "clone bit 1 should be 1");
+  Check(b.bits[2] == 1, "clone bit 2 should be 1");
+  Check(b.bits[3] == 0, "clone bit 3 should be 0");
+  Check(b.bits[4] == 1, "clone bit 4 should be 1");
+  Check(b.num_bits == 5, "cloned num bits should be 5");
+}
+
 int main() {
   TestLoadAndStore();
+  TestClone();
   printf("All tests passed\n");
 }

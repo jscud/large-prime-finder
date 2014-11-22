@@ -44,6 +44,14 @@ void BitUIntStore(const BitUInt* this, int buffer_size, char* buffer) {
   buffer[i] = 0;
 }
 
+void BitUIntClone(const BitUInt* that, BitUInt* this) {
+  this->num_bits = that->num_bits;
+  int i;
+  for (i = 0; i < that->num_bits; i++) {
+    this->bits[i] = that->bits[i];
+  }
+}
+
 void BitUIntTrim(BitUInt* this) {
   while (this->bits[this->num_bits - 1] == 0) {
     this->num_bits--;
