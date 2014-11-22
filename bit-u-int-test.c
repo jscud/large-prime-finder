@@ -14,20 +14,31 @@
  * limitations under the License.
  */
 
-#ifndef BIT_U_INT_H
-#define BIT_U_INT_H
+#include "bit-u-int.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-#include <stdint.h>
+void Check(int condition, char* message) {
+  if (!condition) {
+    fprintf(stderr, "Condition failed: %s\n", message);
+    exit(1);
+  }
+}
 
-#define MAX_NUM_BIT_U_INT_BITS 200
+void TestLoad() {
+  BitUInt a;
 
-typedef struct {
-  int num_bits;
-  uint8_t bits[MAX_NUM_BIT_U_INT_BITS];
-} BitUInt;
+  char* example = "0101";
 
-// Reads the text representation of a binary unsigned integer from a string
-// and stores loaded value into the provided location.
-void BitUIntLoad(int buffer_size, char* buffer, BitUInt* this);
+  BitUIntLoad(strlen(example), example, &a);
+  Check(a.bits[0] == 0, "loaded bit 0 should be 0");
+  Check(a.bits[1] == 1, "loaded bit 1 should be 1");
+  Check(a.bits[2] == 0, "loaded bit 2 should be 0");
+  Check(a.bits[3] == 1, "loaded bit 3 should be 1");
+}
 
-#endif
+int main() {
+  TestLoad();
+  printf("All tests passed\n");
+}

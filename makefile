@@ -33,5 +33,16 @@ next-prime-finder.o: next-prime-finder.c large-u-int.h
 large-u-int.o: large-u-int.c large-u-int.h
 	gcc -c large-u-int.c
 
+# BitUInt rules.
+bit-u-int-test: bit-u-int.o bit-u-int-test.o
+	gcc bit-u-int.o bit-u-int-test.o -o bit-u-int-test
+
+bit-u-int-test.o: bit-u-int-test.c bit-u-int.h
+	gcc -c bit-u-int-test.c
+
+bit-u-int.o: bit-u-int.c bit-u-int.h
+	gcc -c bit-u-int.c
+
+
 clean:
-	rm *.o large-u-int-test resumable-prime-finder large-u-int-resumable-prime-finder random-prime-finder next-prime-finder
+	rm *.o large-u-int-test resumable-prime-finder large-u-int-resumable-prime-finder random-prime-finder next-prime-finder bit-u-int-test

@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-#ifndef BIT_U_INT_H
-#define BIT_U_INT_H
+#include "bit-u-int.h"
 
-#include <stdint.h>
+#include <assert.h>
 
-#define MAX_NUM_BIT_U_INT_BITS 200
-
-typedef struct {
-  int num_bits;
-  uint8_t bits[MAX_NUM_BIT_U_INT_BITS];
-} BitUInt;
-
-// Reads the text representation of a binary unsigned integer from a string
-// and stores loaded value into the provided location.
-void BitUIntLoad(int buffer_size, char* buffer, BitUInt* this);
-
-#endif
+void BitUIntLoad(int buffer_size, char* buffer, BitUInt* this) {
+  int i;
+  char current;
+  this->num_bits = 0;
+  for (i = 0; i < buffer_size; i++) {
+    assert(i < MAX_NUM_BIT_U_INT_BITS);
+    current = buffer[i];
+    if (current == '0' || current == '1') {
+      this->bits[i] = current - '0';
+      this->num_bits++;
+    } else {
+      break;
+    }
+  }
+}
