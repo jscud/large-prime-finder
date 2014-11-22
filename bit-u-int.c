@@ -35,6 +35,15 @@ void BitUIntLoad(int buffer_size, char* buffer, BitUInt* this) {
   BitUIntTrim(this);
 }
 
+void BitUIntStore(const BitUInt* this, int buffer_size, char* buffer) {
+  assert(this->num_bits < buffer_size);
+  int i;
+  for (i = 0; i < this->num_bits; i++) {
+    buffer[i] = this->bits[i] + '0';
+  }
+  buffer[i] = 0;
+}
+
 void BitUIntTrim(BitUInt* this) {
   while (this->bits[this->num_bits - 1] == 0) {
     this->num_bits--;

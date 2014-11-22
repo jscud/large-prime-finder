@@ -26,7 +26,7 @@ void Check(int condition, char* message) {
   }
 }
 
-void TestLoad() {
+void TestLoadAndStore() {
   BitUInt a;
 
   char* example = "0101";
@@ -49,9 +49,15 @@ void TestLoad() {
   Check(a.bits[0] == 0, "load and trim bit 0 should be 0");
   Check(a.bits[1] == 1, "load and trim bit 1 should be 1");
   Check(a.num_bits == 2, "loaded num bits should be 2");
+
+  char buffer[30];
+  int buffer_size = 30;
+  BitUIntStore(&a, buffer_size, buffer);
+  Check(0 == strncmp(buffer, "01", buffer_size),
+        "String buffer should contain 01");
 }
 
 int main() {
-  TestLoad();
+  TestLoadAndStore();
   printf("All tests passed\n");
 }

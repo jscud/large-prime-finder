@@ -30,6 +30,10 @@ typedef struct {
 // and stores loaded value into the provided location.
 void BitUIntLoad(int buffer_size, char* buffer, BitUInt* this);
 
+// Writes a text representation of this binary unsigned integer into the
+// provided string buffer.
+void BitUIntStore(const BitUInt* this, int buffer_size, char* buffer);
+
 // Removes leading zeros from the binary unsigned integer.
 void BitUIntTrim(BitUInt* this);
 
