@@ -30,12 +30,19 @@ void TestLoad() {
   BitUInt a;
 
   char* example = "0101";
-
   BitUIntLoad(strlen(example), example, &a);
   Check(a.bits[0] == 0, "loaded bit 0 should be 0");
   Check(a.bits[1] == 1, "loaded bit 1 should be 1");
   Check(a.bits[2] == 0, "loaded bit 2 should be 0");
   Check(a.bits[3] == 1, "loaded bit 3 should be 1");
+  Check(a.num_bits == 4, "loaded num bits should be 4");
+
+  example = "10121001";
+  BitUIntLoad(strlen(example), example, &a);
+  Check(a.bits[0] == 1, "loaded bit 0 should be 1");
+  Check(a.bits[1] == 0, "loaded bit 1 should be 0");
+  Check(a.bits[3] == 1, "loaded bit 2 should be 1");
+  Check(a.num_bits == 3, "loaded num bits should be 3");
 }
 
 int main() {
