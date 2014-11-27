@@ -17,6 +17,14 @@
 #include "bit-u-int.h"
 
 #include <assert.h>
+#include <stdio.h>
+
+void BitUIntPrint(const BitUInt* this) {
+  int i;
+  for (i = 0; i < this->num_bits; i++) {
+    printf("%i", this->bits[i]);
+  }
+}
 
 void BitUIntLoad(int buffer_size, char* buffer, BitUInt* this) {
   int i;
@@ -79,5 +87,31 @@ int BitUIntHalve(BitUInt* this) {
     return low_bit;
   } else {
     return 0;
+  }
+}
+
+void BitUIntAdd(BitUInt* that, BitUInt* this) {
+  int carry = 0;
+  int sum;
+  int i;
+  for (i = 0; i < that->num_bits || i < this->num_bits; i++) {
+    if (i < that->num_bits && i < this->num_bits) {
+      sum = this->bits[i] + that->bits[i] + carry;
+      carry = sum > 1;
+      this->bits[i] = sum & 1;
+    } else if (i < that->num_bits) {
+      sum = that->bits[i] + carry;
+      carry = sum > 1;
+      this->bits[i] = sum & 1;
+      this->num_bits++;
+    } else if (i < this->num_bits) {
+      sum = this->bits[i] + carry;
+      carry = sum > 1;
+      this->bits[i] = sum & 1;
+    } 
+  }
+  if (carry) {
+    this->bits[i] = 1;
+    this->num_bits++;
   }
 }

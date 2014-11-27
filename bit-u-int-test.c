@@ -94,9 +94,39 @@ void TestDoubleAndHalve() {
   Check(1 == dropped, "second halve should yield a 1");
 }
 
+void TestAdd() {
+  BitUInt a, b;
+  char* a_str = "001";
+  char* b_str = "11";
+  BitUIntLoad(strlen(a_str), a_str, &a);
+  BitUIntLoad(strlen(b_str), b_str, &b);
+  BitUIntAdd(&b, &a);
+  CheckBitUInt("111", &a, "added a should be 7");
+  CheckBitUInt("11", &b, "b should be unchanged");
+
+  CheckBitUInt("111", &a, "added a should be 7");
+  BitUIntAdd(&b, &a);
+  CheckBitUInt("0101", &a, "added a should be 10");
+
+  a_str = "001";
+  b_str = "01101"; 
+  BitUIntLoad(strlen(a_str), a_str, &a);
+  BitUIntLoad(strlen(b_str), b_str, &b);
+  BitUIntAdd(&b, &a);
+  CheckBitUInt("01011", &a, "added a should be 26");
+  
+  a_str = "1";
+  b_str = "1";
+  BitUIntLoad(strlen(a_str), a_str, &a);
+  BitUIntLoad(strlen(b_str), b_str, &b);
+  BitUIntAdd(&b, &a);
+  CheckBitUInt("01", &a, "added a should be 2");
+}
+
 int main() {
   TestLoadAndStore();
   TestClone();
   TestDoubleAndHalve();
+  TestAdd();
   printf("All tests passed\n");
 }

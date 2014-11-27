@@ -26,6 +26,10 @@ typedef struct {
   uint8_t bits[MAX_NUM_BIT_U_INT_BITS];
 } BitUInt;
 
+// Sends the binary representation of the integer to stdout. The bits are
+// printed in little endian order, least significant bit first.
+void BitUIntPrint(const BitUInt* this);
+
 // Reads the text representation of a binary unsigned integer from a string
 // and stores loaded value into the provided location.
 void BitUIntLoad(int buffer_size, char* buffer, BitUInt* this);
@@ -46,6 +50,9 @@ void BitUIntDouble(BitUInt* this);
 // Reduces the value of the insiged integer to half and returns the low order
 // bit from the binary number which has been dropped.
 int BitUIntHalve(BitUInt* this);
+
+// Adds the first argument to the second and stores in the second argument.
+void BitUIntAdd(BitUInt* that, BitUInt* this);
 
 
 #endif
