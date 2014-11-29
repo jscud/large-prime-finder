@@ -123,10 +123,44 @@ void TestAdd() {
   CheckBitUInt("01", &a, "added a should be 2");
 }
 
+void TestCompare() {
+  BitUInt a, b;
+  char* a_str = "101";
+  char* b_str = "11";
+  BitUIntLoad(strlen(a_str), a_str, &a);
+  BitUIntLoad(strlen(b_str), b_str, &b);
+  Check(-1 == BitUIntCompare(&a, &b),
+        "A 3 bit int should be larger than a 2 bit int");
+  Check(1 == BitUIntCompare(&b, &a),
+        "A 2 bit int should be smaller than a 3 bit int");
+  Check(0 == BitUIntCompare(&a, &a), "An int should be equal to itself");
+
+  b_str = "011";
+  BitUIntLoad(strlen(b_str), b_str, &b);
+  Check(1 == BitUIntLessThan(&a, &b), "101 should be less than 011");
+  Check(1 == BitUIntCompare(&a, &b), "011 should be greater than 101");
+  Check(0 == BitUIntLessThan(&b, &a), "011 should not be less than 101");
+  Check(-1 == BitUIntCompare(&b, &a), "Expect -1 for comparing 011 to 101");
+
+  b_str = "001";
+  BitUIntLoad(strlen(b_str), b_str, &b);
+  Check(0 == BitUIntLessThan(&a, &b), "101 should be not be less than 001");
+  Check(-1 == BitUIntCompare(&a, &b), "Expect -1 for comparing 001 to 101");
+  Check(1 == BitUIntLessThan(&b, &a), "001 should be less than 101");
+  Check(1 == BitUIntCompare(&b, &a), "Expect 1 for comparing 001 to 101");
+
+  Check(0 == BitUIntLessThan(&a, &a), "101 should not be less than itself");
+  Check(1 == BitUIntEqual(&a, &a), "101 should be equal to itself");
+  Check(1 == BitUIntLessThanOrEqual(&a, &a),
+        "101 self less than or equal is 1");
+  Check(0 == BitUIntCompare(&a, &a), "101 self compare is 0");
+}
+
 int main() {
   TestLoadAndStore();
   TestClone();
   TestDoubleAndHalve();
   TestAdd();
+  TestCompare();
   printf("All tests passed\n");
 }

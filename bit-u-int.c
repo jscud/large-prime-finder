@@ -115,3 +115,29 @@ void BitUIntAdd(BitUInt* that, BitUInt* this) {
     this->num_bits++;
   }
 }
+
+int BitUIntCompare(const BitUInt* this, const BitUInt* that) {
+  if (this->num_bits != that->num_bits) {
+    return this->num_bits < that->num_bits ? 1 : -1;
+  }
+
+  int i;
+  for (i = this->num_bits - 1; i >= 0; i--) {
+    if (this->bits[i] != that->bits[i]) {
+      return this->bits[i] < that->bits[i] ? 1 : -1;
+    }
+  }
+  return 0;
+}
+
+int BitUIntLessThan(const BitUInt* this, const BitUInt* that) {
+  return BitUIntCompare(this, that) == 1;
+}
+
+int BitUIntLessThanOrEqual(const BitUInt* this, const BitUInt* that) {
+  return BitUIntCompare(this, that) > -1;
+}
+
+int BitUIntEqual(const BitUInt* this, const BitUInt* that) {
+  return BitUIntCompare(this, that) == 0;
+}

@@ -54,5 +54,23 @@ int BitUIntHalve(BitUInt* this);
 // Adds the first argument to the second and stores in the second argument.
 void BitUIntAdd(BitUInt* that, BitUInt* this);
 
+// Compares two large unsigned integers, returning 0 if they are equal, 1 if
+// the second is greater than the first, and -1 if the first is greater than
+// the second.
+// this == that --> 0
+// this < that  --> 1
+// this > that  --> -1
+int BitUIntCompare(const BitUInt* this, const BitUInt* that);
+
+// Returns 1 if the first argument is less than the second, otherwise 0.
+int BitUIntLessThan(const BitUInt* this, const BitUInt* that);
+
+// Returns 1 if the first argument is less than the second or if both are
+// equal. Otherwise returns 0.
+int BitUIntLessThanOrEqual(const BitUInt* this, const BitUInt* that);
+
+// Returns 1 if both arguments are equal, otherwise 0.
+int BitUIntEqual(const BitUInt* this, const BitUInt* that);
+
 
 #endif
