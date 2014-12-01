@@ -9,6 +9,9 @@ large-u-int-test: large-u-int.o large-u-int-test.o
 large-u-int-test.o: large-u-int-test.c large-u-int.h
 	gcc -c large-u-int-test.c
 
+large-u-int.o: large-u-int.c large-u-int.h
+	gcc -c large-u-int.c
+
 # Resumable Prime Finder supporting large unsigned integers.
 large-u-int-resumable-prime-finder: large-u-int-resumable-prime-finder.o large-u-int.o
 	gcc large-u-int-resumable-prime-finder.o large-u-int.o -o large-u-int-resumable-prime-finder
@@ -30,8 +33,12 @@ next-prime-finder: next-prime-finder.o large-u-int.o
 next-prime-finder.o: next-prime-finder.c large-u-int.h
 	gcc -c next-prime-finder.c
 
-large-u-int.o: large-u-int.c large-u-int.h
-	gcc -c large-u-int.c
+# Next Prime Finder using the binary large integer library.
+next-prime-finder-bits: next-prime-finder-bits.o bit-u-int.o
+	gcc next-prime-finder-bits.o bit-u-int.o -o next-prime-finder-bits
+
+next-prime-finder-bits.o: next-prime-finder-bits.c bit-u-int.h
+	gcc -c next-prime-finder-bits.c
 
 # BitUInt rules.
 bit-u-int-test: bit-u-int.o bit-u-int-test.o
@@ -45,4 +52,4 @@ bit-u-int.o: bit-u-int.c bit-u-int.h
 
 
 clean:
-	rm -f *.o large-u-int-test resumable-prime-finder large-u-int-resumable-prime-finder random-prime-finder next-prime-finder bit-u-int-test
+	rm -f *.o large-u-int-test resumable-prime-finder large-u-int-resumable-prime-finder random-prime-finder next-prime-finder bit-u-int-test next-prime-finder-bits
