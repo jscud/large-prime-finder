@@ -26,6 +26,12 @@ void BitUIntPrint(const BitUInt* this) {
   }
 }
 
+void BitUIntBase10Print(const BitUInt* this) {
+  char str_buffer[BASE_10_BIT_U_INT_BUFFER_SIZE];
+  BitUIntBase10Store(this, BASE_10_BIT_U_INT_BUFFER_SIZE, str_buffer);
+  printf("%s", str_buffer);
+}
+
 void BitUIntLoad(int buffer_size, char* buffer, BitUInt* this) {
   int i;
   char current;
@@ -52,6 +58,42 @@ void BitUIntStore(const BitUInt* this, int buffer_size, char* buffer) {
   buffer[i] = 0;
 }
 
+void BitUIntBase10Store(const BitUInt* this, int buffer_size, char* buffer) {
+  char internal_buffer[BASE_10_BIT_U_INT_BUFFER_SIZE];
+  int num_digits = 0;
+  int i, power;
+  BitUInt reduced_this;
+  BitUInt quotient;
+  BitUInt remainder;
+  BitUInt ten;
+  ten.num_bits = 4;
+  ten.bits[0] = 0;
+  ten.bits[1] = 1;
+  ten.bits[2] = 0;
+  ten.bits[3] = 1;
+
+  BitUIntDiv(this, &ten, &quotient, &remainder);
+  while (remainder.num_bits > 0 || quotient.num_bits > 0) {
+    internal_buffer[num_digits] = 0;
+    power = 1;
+    for (i = 0; i < remainder.num_bits; i++) {
+      internal_buffer[num_digits] += remainder.bits[i] * power;
+      power *= 2;
+    }
+    BitUIntClone(&quotient, &reduced_this);
+    num_digits++;
+    BitUIntDiv(&reduced_this, &ten, &quotient, &remainder);
+  }
+
+  assert(num_digits < buffer_size - 1);
+
+  for (i = 0; i < num_digits; i++) {
+    buffer[i] = '0' + internal_buffer[num_digits - i - 1];
+  }
+  buffer[i] = '\0';
+}
+
+
 void BitUIntClone(const BitUInt* that, BitUInt* this) {
   this->num_bits = that->num_bits;
   int i;
@@ -61,8 +103,36 @@ void BitUIntClone(const BitUInt* that, BitUInt* this) {
 }
 
 void BitUIntTrim(BitUInt* this) {
-  while (this->bits[this->num_bits - 1] == 0) {
+  while (this->bits[this->num_bits - 1] == 0 && this->num_bits > 0) {
     this->num_bits--;
+  }
+}
+
+void BitUIntInc(BitUInt* this) {
+  int i;
+  for (i = 0; i < this->num_bits; i++) {
+    if (this->bits[i] == 1) {
+      this->bits[i] = 0;
+    } else {
+      this->bits[i] = 1;
+    	  return;
+    }
+  }
+  this->num_bits++;
+  this->bits[i] = 1;
+}
+
+void BitUIntDec(BitUInt* this) {
+  assert(this->num_bits > 0);
+  int i;
+  for (i = 0; i < this->num_bits; i++) {
+    if (this->bits[i] == 1) {
+      this->bits[i] = 0;
+      BitUIntTrim(this);
+      return;
+    } else {
+      this->bits[i] = 1;
+    }
   }
 }
 
@@ -108,11 +178,56 @@ void BitUIntAdd(BitUInt* that, BitUInt* this) {
       sum = this->bits[i] + carry;
       carry = sum > 1;
       this->bits[i] = sum & 1;
-    } 
+    }
   }
   if (carry) {
     this->bits[i] = 1;
     this->num_bits++;
+  }
+}
+
+void BitUIntSub(const BitUInt* that, BitUInt* this) {
+  assert(BitUIntLessThanOrEqual(that, this));
+  int i;
+  int borrow = 0;
+  int diff;
+  for (i = 0; i < that->num_bits || i < this->num_bits; i++) {
+    if (i < that->num_bits && i < this->num_bits) {
+      diff = this->bits[i] - that->bits[i] - borrow;
+      borrow = diff < 0;
+      this->bits[i] = diff & 1;
+    } else if (i < this->num_bits) {
+      diff = this->bits[i] - borrow;
+      borrow = diff < 0;
+      this->bits[i] = diff & 1;
+    } 
+  }
+  BitUIntTrim(this);
+}
+
+void BitUIntMul(const BitUInt* that, BitUInt* this) {
+  if (0 == that->num_bits) {
+    this->num_bits = 0;
+  }
+  BitUInt counter;
+  BitUIntClone(that, &counter);
+  BitUInt original_this;
+  BitUIntClone(this, &original_this);
+  BitUIntDec(&counter);
+  while (counter.num_bits > 0) {
+    BitUIntAdd(&original_this, this);
+    BitUIntDec(&counter);
+  }
+}
+
+void BitUIntDiv(const BitUInt* numerator, const BitUInt* denominator,
+                BitUInt* quotient, BitUInt* remainder) {
+  assert(denominator->num_bits > 0);
+  BitUIntClone(numerator, remainder);
+  quotient->num_bits = 0;
+  while (BitUIntLessThanOrEqual(denominator, remainder)) {
+    BitUIntInc(quotient);
+    BitUIntSub(denominator, remainder);
   }
 }
 

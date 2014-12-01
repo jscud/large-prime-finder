@@ -102,7 +102,7 @@ void TestAdd() {
   BitUIntLoad(strlen(b_str), b_str, &b);
   BitUIntAdd(&b, &a);
   CheckBitUInt("111", &a, "added a should be 7");
-  CheckBitUInt("11", &b, "b should be unchanged");
+  CheckBitUInt("11", &b, "b should be unchanged after addition");
 
   CheckBitUInt("111", &a, "added a should be 7");
   BitUIntAdd(&b, &a);
@@ -121,6 +121,46 @@ void TestAdd() {
   BitUIntLoad(strlen(b_str), b_str, &b);
   BitUIntAdd(&b, &a);
   CheckBitUInt("01", &a, "added a should be 2");
+}
+
+void TestSub() {
+  BitUInt a, b;
+  char* a_str = "001";
+  char* b_str = "11";
+  BitUIntLoad(strlen(a_str), a_str, &a);
+  BitUIntLoad(strlen(b_str), b_str, &b);
+  BitUIntSub(&b, &a);
+  CheckBitUInt("1", &a, "subtracted a should be 1");
+  CheckBitUInt("11", &b, "b should be unchanged after subtraction");
+
+  a_str = "1";
+  b_str = "1";
+  BitUIntLoad(strlen(a_str), a_str, &a);
+  BitUIntLoad(strlen(b_str), b_str, &b);
+  BitUIntSub(&b, &a);
+  Check(0 == a.num_bits, "sub(1, 1) should be 0");
+}
+
+void TestIncDec() {
+  BitUInt a;
+  a.num_bits = 0;
+  BitUIntInc(&a);
+  CheckBitUInt("1", &a, "incremented 0 should be 1");
+
+  BitUIntInc(&a);
+  CheckBitUInt("01", &a, "incremented 1 should be 2");
+
+  BitUIntInc(&a);
+  CheckBitUInt("11", &a, "incremented 2 should be 3");
+
+  BitUIntDec(&a);
+  CheckBitUInt("01", &a, "decremented 3 should be 2");
+
+  BitUIntDec(&a);
+  CheckBitUInt("1", &a, "decremented 2 should be 1");
+
+  BitUIntDec(&a);
+  Check(0 == a.num_bits, "decremented 1 should be 0");
 }
 
 void TestCompare() {
@@ -156,11 +196,95 @@ void TestCompare() {
   Check(0 == BitUIntCompare(&a, &a), "101 self compare is 0");
 }
 
+void TestMultiply() {
+  BitUInt a, b;
+  char* a_str = "101";
+  char* b_str = "1";
+  BitUIntLoad(strlen(a_str), a_str, &a);
+  BitUIntLoad(strlen(b_str), b_str, &b);
+
+  BitUIntMul(&b, &a);
+  CheckBitUInt("101", &a, "5 times 1 should be 5");
+
+  b_str = "01";
+  BitUIntLoad(strlen(b_str), b_str, &b);
+  BitUIntMul(&b, &a);
+  CheckBitUInt("0101", &a, "5 times 2 should be 10");
+
+  a_str = "101";
+  b_str = "11";
+  BitUIntLoad(strlen(a_str), a_str, &a);
+  BitUIntLoad(strlen(b_str), b_str, &b);
+  BitUIntMul(&b, &a);
+  CheckBitUInt("1111", &a, "5 times 3 should be 15");
+}
+
+void TestDivide() {
+  BitUInt n, d, q, r;
+  char* n_str = "101";
+  char* d_str = "1";
+  BitUIntLoad(strlen(n_str), n_str, &n);
+  BitUIntLoad(strlen(d_str), d_str, &d);
+  BitUIntDiv(&n, &d, &q, &r);
+  CheckBitUInt("101", &q, "5 divided by 1 should be 5");
+  Check(0 == r.num_bits, "1 should divide evenly into 5");
+
+  d_str = "01";
+  BitUIntLoad(strlen(d_str), d_str, &d);
+  BitUIntDiv(&n, &d, &q, &r);
+  CheckBitUInt("01", &q, "5 divided by 2 should be 2");
+  CheckBitUInt("1", &r, "5 divided by 2 should have a remainder of 1");
+
+  d_str = "11";
+  BitUIntLoad(strlen(d_str), d_str, &d);
+  BitUIntDiv(&n, &d, &q, &r);
+  CheckBitUInt("1", &q, "5 divided by 3 should be 1");
+  CheckBitUInt("01", &r, "5 divided by 3 should have a remainder of 2");
+
+  d_str = "011";
+  BitUIntLoad(strlen(d_str), d_str, &d);
+  BitUIntDiv(&n, &d, &q, &r);
+  Check(0 == q.num_bits, "5 divided by 6 should be 0");
+  CheckBitUInt("101", &r, "5 divided by 6 should have a remainder of 5");
+
+  d_str = "101";
+  BitUIntLoad(strlen(d_str), d_str, &d);
+  BitUIntDiv(&n, &d, &q, &r);
+  CheckBitUInt("1", &q, "5 divided by 5 should be 1");
+  Check(0 == r.num_bits, "5 divided by 5 should have a remainder of 0");
+}
+
+void TestBase10Store() {
+  char dec_str[9];
+  BitUInt a;
+  char* a_str = "0011";
+  BitUIntLoad(strlen(a_str), a_str, &a);
+  BitUIntBase10Store(&a, 9, dec_str);
+  Check(0 == strncmp(dec_str, "12", 9), "0011 should be 12 in base 10");
+
+  a_str = "01010010110001";
+  BitUIntLoad(strlen(a_str), a_str, &a);
+  BitUIntBase10Store(&a, 9, dec_str);
+  Check(0 == strncmp(dec_str, "9034", 9),
+        "01010010110001 should be 9034 in base 10");
+
+  a_str = "11001001011101";
+  BitUIntLoad(strlen(a_str), a_str, &a);
+  BitUIntBase10Store(&a, 9, dec_str);
+  Check(0 == strncmp(dec_str, "11923", 9),
+        "11001001011101 should be 11923 in base 10");
+}
+
 int main() {
   TestLoadAndStore();
   TestClone();
   TestDoubleAndHalve();
   TestAdd();
+  TestSub();
+  TestIncDec();
   TestCompare();
+  TestMultiply();
+  TestDivide();
+  TestBase10Store();
   printf("All tests passed\n");
 }
