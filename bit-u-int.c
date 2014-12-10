@@ -249,50 +249,31 @@ void BitUIntMul(const BitUInt* that, BitUInt* this) {
 void BitUIntDiv(const BitUInt* numerator, const BitUInt* denominator,
                 BitUInt* quotient, BitUInt* remainder) {
   assert(denominator->num_bits > 0);
-  quotient->num_bits = 0;
-  remainder->num_bits = 0;
-  if (numerator->num_bits == 0) {
+
+  BitUIntClone(numerator, remainder);
+  if (BitUIntLessThan(numerator, denominator)) {
     quotient->num_bits = 0;
-    remainder->num_bits = 0;
     return;
   }
 
-  assert(numerator->num_bits > 0);
-  assert(numerator->bits[numerator->num_bits - 1] == 1);
-
-  int numerator_index = numerator->num_bits;
-  BitUInt partial_numerator;
-  partial_numerator.num_bits = 0;
-
-  while (BitUIntLessThanOrEqual(&partial_numerator, denominator) &&
-         numerator_index > 0) {
-    while (BitUIntLessThan(&partial_numerator, denominator) &&
-           numerator_index > 0) {
-      numerator_index--;
-      if (partial_numerator.num_bits > 0) {
-        BitUIntDouble(&partial_numerator);
-      }
-      if (quotient->num_bits > 0) {
-        BitUIntDouble(quotient);
-      }
-      partial_numerator.bits[0] = numerator->bits[numerator_index];
-      if (partial_numerator.num_bits == 0 && partial_numerator.bits[0] == 1) {
-        partial_numerator.num_bits = 1;
-      }
-
-      BitUIntTrim(&partial_numerator);
+  BitUInt multiplied_denominator;
+  BitUIntClone(denominator, &multiplied_denominator);
+  int num_shifts;
+  quotient->num_bits = remainder->num_bits - multiplied_denominator.num_bits + 1;
+  memset(quotient->bits, 0, quotient->num_bits);
+  while (BitUIntLessThanOrEqual(denominator, remainder)) {
+    num_shifts = remainder->num_bits - multiplied_denominator.num_bits;
+    BitUIntShiftInc(num_shifts, &multiplied_denominator);
+    if (BitUIntLessThan(remainder, &multiplied_denominator)) {
+      num_shifts--;
+      BitUIntHalve(&multiplied_denominator);
     }
-    if (BitUIntLessThanOrEqual(denominator, &partial_numerator)) {
-      BitUIntSub(denominator, &partial_numerator);
-      BitUIntTrim(&partial_numerator);
-      if (quotient->num_bits == 0) {
-        quotient->num_bits++;
-      }
-      quotient->bits[0] = 1;
-    }
+    BitUIntSub(&multiplied_denominator, remainder);
+    quotient->bits[num_shifts] = 1;
+    BitUIntClone(denominator, &multiplied_denominator);
   }
 
-  BitUIntClone(&partial_numerator, remainder);
+  BitUIntTrim(quotient); 
 }
 
 void BitUIntApproximateSquareRoot(const BitUInt* this, BitUInt* root) {
