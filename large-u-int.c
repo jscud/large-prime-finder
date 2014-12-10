@@ -19,10 +19,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <assert.h>
 
 static const char kHexBytes[] = {'0', '1', '2', '3', '4', '5', '6', '7',
                                  '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+
+// Exits the program after sending the message to stderr.
+static void ErrorOut(char* message) {
+  fprintf(stderr, "%s\n", message);
+  exit(1);
+}
 
 static int HexCharToNibble(char hex_char) {
   if (hex_char >= '0' && hex_char <= '9') {
@@ -116,7 +121,9 @@ static int ParseCharacter(int current, LargeUInt* this, int* state) {
 }
 
 void LargeUIntRead(FILE* in, LargeUInt* this) {
-  assert(in != NULL);
+  if (in == NULL) {
+    ErrorOut("Invalid file, unable to read LargeUInt.");
+  }
 
   int current = fgetc(in);
   int state = -1;  // start state
@@ -140,8 +147,9 @@ int LargeUIntBufferSize(const LargeUInt* this) {
 }
 
 void LargeUIntStore(const LargeUInt* this, int buffer_size, char* buffer) {
-  // Ensure there is enough space in the buffer for the LargeUInt's value.
-  assert(LargeUIntBufferSize(this) <= buffer_size);
+  if (LargeUIntBufferSize(this) > buffer_size) {
+    ErrorOut("Insufficient space for value in the provided buffer.");
+  }
 
   buffer[0] = kHexBytes[this->num_bytes_ >> 4 & 0x0F];
   buffer[1] = kHexBytes[this->num_bytes_ & 0x0F];
@@ -183,8 +191,9 @@ void LargeUIntBase10Store(
     LargeUIntDivide(&reduced_this, &ten, &quotient, &remainder);
   }
 
-  // Ensure there is space in the buffer to store the base ten string.
-  assert(num_digits < buffer_size);
+  if (num_digits > buffer_size - 1) {
+    ErrorOut("Insufficient space in buffer to store base ten string.");
+  }
 
   int i;
   for (i = 0; i < num_digits; i++) {
@@ -194,7 +203,9 @@ void LargeUIntBase10Store(
 }
 
 void LargeUIntLoad(int buffer_size, char* buffer, LargeUInt* this) {
-  assert(buffer != NULL);
+  if (buffer == NULL) {
+    ErrorOut("Invalid input buffer, unable to load LargeUInt.");
+  }
 
   int state = -1;  // start state
   int i;
@@ -206,14 +217,16 @@ void LargeUIntLoad(int buffer_size, char* buffer, LargeUInt* this) {
 }
 
 void LargeUIntInit(int starting_size, LargeUInt* this) {
-  // Check that initialization size is in the range of valid sizes.
-  assert(starting_size >= 0 && starting_size <= MAX_NUM_LARGE_U_INT_BYTES);
+  if (starting_size < 0 || starting_size > MAX_NUM_LARGE_U_INT_BYTES) {
+    ErrorOut("Invalis size when initializing a large integer.");
+  }
   this->num_bytes_ = starting_size;
 }
 
 void LargeUIntGrow(LargeUInt* this) {
-  // Ensure that growing the LargeUInt will not violate the max size.
-  assert(this->num_bytes_ < MAX_NUM_LARGE_U_INT_BYTES);
+  if (this->num_bytes_ == MAX_NUM_LARGE_U_INT_BYTES) {
+    ErrorOut("Unable to grow large integer.");
+  }
   this->num_bytes_++;
 }
 
@@ -224,16 +237,19 @@ void LargeUIntTrim(LargeUInt* this) {
 }
 
 void LargeUIntSetByte(int value, int index, LargeUInt* this) {
-  // Check bounds for the index.
-  assert(index >= 0 && index < this->num_bytes_);
-  // Check for valid value for a byte.
-  assert(value >= 0 && value <= 255);
+  if (index < 0 || index >= this->num_bytes_) {
+    ErrorOut("Index out of bounds when setting byte.");
+  }
+  if (value < 0 || value > 255) {
+    ErrorOut("Invalid value when setting byte.");
+  }
   this->bytes_[index] = value;
 }
 
 int LargeUIntGetByte(int index, const LargeUInt* this) {
-  // Check bounds for the index.
-  assert(index >= 0 && index < this->num_bytes_);
+  if (index < 0 || index >= this->num_bytes_) {
+    ErrorOut("Index out of bounds when getting byte.");
+  }
   return this->bytes_[index];
 }
 
@@ -278,8 +294,9 @@ void LargeUIntClone(const LargeUInt* that, LargeUInt* this) {
 }
 
 void LargeUIntByteShiftInc(LargeUInt* this) {
-  // Ensure there is space for the LargeUInt to grow for the byte shift.
-  assert(this->num_bytes_ < MAX_NUM_LARGE_U_INT_BYTES);
+  if (this->num_bytes_ == MAX_NUM_LARGE_U_INT_BYTES) {
+    ErrorOut("Unable to byte shift large integer.");
+  }
   int i;
   for (i = this->num_bytes_; i > 0; i--) {
     this->bytes_[i] = this->bytes_[i - 1];
@@ -290,8 +307,9 @@ void LargeUIntByteShiftInc(LargeUInt* this) {
 }
 
 int LargeUIntByteShiftDec(LargeUInt* this) {
-  // We can't shrink a LargeUInt that is already zero bytes.
-  assert(this->num_bytes_ > 0);
+  if (this->num_bytes_ < 1) {
+    ErrorOut("Unable to decrease shift an integer of zero.");
+  }
 
   int lowest_byte = this->bytes_[0];
   int i;
@@ -332,8 +350,9 @@ void LargeUIntAdd(const LargeUInt* that, LargeUInt* this) {
 }
 
 void LargeUIntAddByte(int byte, LargeUInt* this) {
-  // Check value of byte, must be between 0 and 255.
-  assert(byte >= 0 && byte <= 255);
+  if (byte < 0 || byte > 255) {
+    ErrorOut("Byte value in addition should be between 0 and 255.");
+  }
   int carry = byte;
   int value = 0;
   for (int i = 0; i < this->num_bytes_ && carry > 0; i++) {
@@ -361,10 +380,9 @@ void LargeUIntSub(const LargeUInt* that, LargeUInt* this) {
   if (diff == 0) {
     LargeUIntInit(0, this);
     return;
-  } 
-
-  // Subtraction would have caused a negative value.
-  assert(diff > 0);
+  } else if (diff < 0) {
+    ErrorOut("Subtraction would have caused a negative value.");
+  }
 
   // We now know that this is larger than that.
   int borrow = 0;
@@ -392,9 +410,9 @@ void LargeUIntDecrement(LargeUInt* this) {
   while (this->num_bytes_ > 0 && this->bytes_[this->num_bytes_ - 1] == 0) {
     this->num_bytes_--;
   }
-
-  // Unable to decrement an integer of value 0.
-  assert(this->num_bytes_ > 0);
+  if (this->num_bytes_ == 0) {
+    ErrorOut("Unable to decrement an integer of value 0.");
+  }
 
   int borrow = 1;
   int value = 0;
