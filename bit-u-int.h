@@ -87,6 +87,11 @@ void BitUIntMul(const BitUInt* that, BitUInt* this);
 void BitUIntDiv(const BitUInt* numerator, const BitUInt* denominator,
                 BitUInt* quotient, BitUInt* remainder);
 
+// Finds an integer that is close to the square root of the first argument
+// without being less than the actual square root. Intended for a rough
+// overestimate of the square root.
+void BitUIntApproximateSquareRoot(const BitUInt* this, BitUInt* root);
+
 // Compares two large unsigned integers, returning 0 if they are equal, 1 if
 // the second is greater than the first, and -1 if the first is greater than
 // the second.

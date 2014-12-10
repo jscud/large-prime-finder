@@ -103,7 +103,7 @@ void BitUIntClone(const BitUInt* that, BitUInt* this) {
 }
 
 void BitUIntTrim(BitUInt* this) {
-  while (this->bits[this->num_bits - 1] == 0 && this->num_bits > 0) {
+  while (this->num_bits > 0 && this->bits[this->num_bits - 1] == 0) {
     this->num_bits--;
   }
 }
@@ -139,11 +139,11 @@ void BitUIntDec(BitUInt* this) {
 void BitUIntDouble(BitUInt* this) {
   assert(this->num_bits < MAX_NUM_BIT_U_INT_BITS);
   int i;
-  for (i = this->num_bits; i > 1; i--) {
-    this->bits[i + 1] = this->bits[i];
+  this->num_bits++;
+  for (i = this->num_bits - 1; i >= 1; i--) {
+    this->bits[i] = this->bits[i - 1];
   }
   this->bits[0] = 0;
-  this->num_bits++;
 }
 
 int BitUIntHalve(BitUInt* this) {
@@ -209,25 +209,111 @@ void BitUIntMul(const BitUInt* that, BitUInt* this) {
   if (0 == that->num_bits) {
     this->num_bits = 0;
   }
-  BitUInt counter;
-  BitUIntClone(that, &counter);
+
   BitUInt original_this;
   BitUIntClone(this, &original_this);
-  BitUIntDec(&counter);
-  while (counter.num_bits > 0) {
-    BitUIntAdd(&original_this, this);
-    BitUIntDec(&counter);
+  int i;
+  // Step backwards through that, adding where there is a 1 and shifting for
+  // each position.
+  for (i = that->num_bits - 2; i >= 0; i--) {
+    BitUIntDouble(this);
+    if (that->bits[i]) {
+      BitUIntAdd(&original_this, this);
+    }
   }
 }
 
 void BitUIntDiv(const BitUInt* numerator, const BitUInt* denominator,
                 BitUInt* quotient, BitUInt* remainder) {
   assert(denominator->num_bits > 0);
-  BitUIntClone(numerator, remainder);
   quotient->num_bits = 0;
-  while (BitUIntLessThanOrEqual(denominator, remainder)) {
-    BitUIntInc(quotient);
-    BitUIntSub(denominator, remainder);
+  remainder->num_bits = 0;
+  if (numerator->num_bits == 0) {
+    quotient->num_bits = 0;
+    remainder->num_bits = 0;
+    return;
+  }
+
+  assert(numerator->num_bits > 0);
+  assert(numerator->bits[numerator->num_bits - 1] == 1);
+
+  int numerator_index = numerator->num_bits;
+  BitUInt partial_numerator;
+  partial_numerator.num_bits = 0;
+
+  while (BitUIntLessThanOrEqual(&partial_numerator, denominator) &&
+         numerator_index > 0) {
+    while (BitUIntLessThan(&partial_numerator, denominator) &&
+           numerator_index > 0) {
+      numerator_index--;
+      if (partial_numerator.num_bits > 0) {
+        BitUIntDouble(&partial_numerator);
+      }
+      if (quotient->num_bits > 0) {
+        BitUIntDouble(quotient);
+      }
+      partial_numerator.bits[0] = numerator->bits[numerator_index];
+      if (partial_numerator.num_bits == 0 && partial_numerator.bits[0] == 1) {
+        partial_numerator.num_bits = 1;
+      }
+
+      BitUIntTrim(&partial_numerator);
+    }
+    if (BitUIntLessThanOrEqual(denominator, &partial_numerator)) {
+      BitUIntSub(denominator, &partial_numerator);
+      BitUIntTrim(&partial_numerator);
+      if (quotient->num_bits == 0) {
+        quotient->num_bits++;
+      }
+      quotient->bits[0] = 1;
+    }
+  }
+
+  BitUIntClone(&partial_numerator, remainder);
+}
+
+void BitUIntApproximateSquareRoot(const BitUInt* this, BitUInt* root) {
+  BitUInt two;
+  two.num_bits = 2;
+  two.bits[0] = 0;
+  two.bits[1] = 1;
+
+  BitUInt remainder;
+  BitUInt estimate;
+  // Start by using an estimate of just above half of the input.
+  BitUIntDiv(this, &two, &estimate, &remainder);
+  BitUIntInc(&estimate);
+
+  BitUInt quotient;
+  BitUInt next_estimate;
+  next_estimate.num_bits = 0;
+
+  int divided_evenly = 0;
+  int comparison;
+  while (1) {
+    BitUIntDiv(this, &estimate, &quotient, &remainder);
+    if (remainder.num_bits == 0) {
+      divided_evenly = 1;
+    } else {
+      divided_evenly = 0;
+    }
+    BitUIntAdd(&estimate, &quotient);
+    BitUIntDiv(&quotient, &two, &next_estimate, &remainder);
+
+    comparison = BitUIntCompare(&next_estimate, &estimate);
+    if (comparison < 1) {
+      if (comparison < 0) {
+        divided_evenly = 0;
+      }
+      break;
+    }
+
+    BitUIntClone(&next_estimate, &estimate);
+  }
+
+  BitUIntClone(&estimate, root);
+  if (divided_evenly == 0) {
+    BitUIntInc(root);
   }
 }
 

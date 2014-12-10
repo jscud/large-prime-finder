@@ -92,6 +92,11 @@ void TestDoubleAndHalve() {
   dropped = BitUIntHalve(&a);
   CheckBitUInt("1101", &a, "halved bits should be 1101");
   Check(1 == dropped, "second halve should yield a 1");
+
+  example = "101";
+  BitUIntLoad(strlen(example), example, &a);
+  BitUIntDouble(&a);
+  CheckBitUInt("0101", &a, "doubled bits should be 0101");
 }
 
 void TestAdd() {
@@ -217,10 +222,18 @@ void TestMultiply() {
   BitUIntLoad(strlen(b_str), b_str, &b);
   BitUIntMul(&b, &a);
   CheckBitUInt("1111", &a, "5 times 3 should be 15");
+
+  a_str = "1011101";
+  b_str = "11001";
+  BitUIntLoad(strlen(a_str), a_str, &a);
+  BitUIntLoad(strlen(b_str), b_str, &b);
+  BitUIntMul(&b, &a);
+  CheckBitUInt("11100111011", &a, "93 times 19 should be 1767");
 }
 
 void TestDivide() {
   BitUInt n, d, q, r;
+ 
   char* n_str = "101";
   char* d_str = "1";
   BitUIntLoad(strlen(n_str), n_str, &n);
@@ -252,6 +265,14 @@ void TestDivide() {
   BitUIntDiv(&n, &d, &q, &r);
   CheckBitUInt("1", &q, "5 divided by 5 should be 1");
   Check(0 == r.num_bits, "5 divided by 5 should have a remainder of 0");
+
+  n_str = "10001111011";
+  d_str = "1011101";
+  BitUIntLoad(strlen(n_str), n_str, &n);
+  BitUIntLoad(strlen(d_str), d_str, &d);
+  BitUIntDiv(&n, &d, &q, &r);
+  CheckBitUInt("11001", &q, "1777 divided by 93 should be 19");
+  CheckBitUInt("0101", &r, "1777 divided by 93 should have a remainder of 10");
 }
 
 void TestBase10Store() {
@@ -275,6 +296,52 @@ void TestBase10Store() {
         "11001001011101 should be 11923 in base 10");
 }
 
+void TestApproximateSquareRoot() {
+  BitUInt n, root;
+  char* n_str;
+  
+  n_str = "001";
+  BitUIntLoad(strlen(n_str), n_str, &n);
+  BitUIntApproximateSquareRoot(&n, &root);
+  CheckBitUInt("01", &root, "Approximate root of 4 should be 2");
+
+  n_str = "1001";
+  BitUIntLoad(strlen(n_str), n_str, &n);
+  BitUIntApproximateSquareRoot(&n, &root);
+  CheckBitUInt("11", &root, "Approximate root of 9 should be 3");
+
+  n_str = "0010011";
+  BitUIntLoad(strlen(n_str), n_str, &n);
+  BitUIntApproximateSquareRoot(&n, &root);
+  CheckBitUInt("0101", &root, "Approximate root of 100 should be 10");
+
+  n_str = "1100011";
+  BitUIntLoad(strlen(n_str), n_str, &n);
+  BitUIntApproximateSquareRoot(&n, &root);
+  CheckBitUInt("0101", &root, "Approximate root of 99 should be 10");
+
+  n_str = "000111011101";
+  BitUIntLoad(strlen(n_str), n_str, &n);
+  BitUIntApproximateSquareRoot(&n, &root);
+  CheckBitUInt("111011", &root, "Approximate root of 3,000 should be 55");
+  
+  // In base 10: 43985512 squared is 1934725265902144
+  // In base 16: 0x29F2A68 squared is 0x6DF9F54364A40
+  n_str = "000000100101001001101100001010101111100111111011011";
+  BitUIntLoad(strlen(n_str), n_str, &n);
+  BitUIntApproximateSquareRoot(&n, &root);
+  CheckBitUInt("00010110010101001111100101", &root,
+               "Root of 1,934,725,265,902,144 should be 43,985,512");
+
+  // Add 1 to the previous square, should bump up to the next integer.
+  n_str = "100000100101001001101100001010101111100111111011011";
+  BitUIntLoad(strlen(n_str), n_str, &n);
+  BitUIntApproximateSquareRoot(&n, &root);
+  CheckBitUInt("10010110010101001111100101", &root,
+               "Root of 1,934,725,265,902,145 should be 43,985,513");
+}
+
+
 int main() {
   TestLoadAndStore();
   TestClone();
@@ -286,5 +353,6 @@ int main() {
   TestMultiply();
   TestDivide();
   TestBase10Store();
+  TestApproximateSquareRoot();
   printf("All tests passed\n");
 }
