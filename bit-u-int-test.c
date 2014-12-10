@@ -99,6 +99,22 @@ void TestDoubleAndHalve() {
   CheckBitUInt("0101", &a, "doubled bits should be 0101");
 }
 
+void TestShiftIncAndDec() {
+  BitUInt a;
+  char* example = "11101";
+  BitUIntLoad(strlen(example), example, &a);
+  BitUIntShiftInc(2, &a);
+  CheckBitUInt("0011101", &a, "shifted bits should be 0011101");
+  
+  BitUIntLoad(strlen(example), example, &a);
+  BitUIntShiftDec(2, &a);
+  CheckBitUInt("101", &a, "shifted bits should be 101");
+
+  a.num_bits = 0;
+  BitUIntShiftInc(1, &a);
+  Check(0 == a.num_bits, "shifting 0 should still be 0");
+}
+
 void TestAdd() {
   BitUInt a, b;
   char* a_str = "001";
@@ -346,6 +362,7 @@ int main() {
   TestLoadAndStore();
   TestClone();
   TestDoubleAndHalve();
+  TestShiftIncAndDec();
   TestAdd();
   TestSub();
   TestIncDec();

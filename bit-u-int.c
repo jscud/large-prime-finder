@@ -18,6 +18,7 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include <string.h>
 
 void BitUIntPrint(const BitUInt* this) {
   int i;
@@ -157,6 +158,28 @@ int BitUIntHalve(BitUInt* this) {
     return low_bit;
   } else {
     return 0;
+  }
+}
+
+void BitUIntShiftInc(int num_bits, BitUInt* this) {
+  assert(this->num_bits + num_bits < MAX_NUM_BIT_U_INT_BITS);
+  if (this->num_bits == 0) {
+    return;
+  }
+  int i;
+  for (i = this->num_bits - 1; i >= 0; i--) {
+    this->bits[i + num_bits] = this->bits[i];
+  }
+  this->num_bits += num_bits;
+  memset(this->bits, 0, num_bits); 
+}
+
+void BitUIntShiftDec(int num_bits, BitUInt* this) {
+  assert(this->num_bits - num_bits >= 0);
+  this->num_bits -= num_bits;
+  int i;
+  for (i = 0; i < this->num_bits; i++) {
+    this->bits[i] = this->bits[i + num_bits];
   }
 }
 

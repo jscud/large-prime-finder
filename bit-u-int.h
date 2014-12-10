@@ -71,6 +71,13 @@ void BitUIntDouble(BitUInt* this);
 // bit from the binary number which has been dropped.
 int BitUIntHalve(BitUInt* this);
 
+// Shifts the bits in the integer to higher values, filling in zeros on low
+// order bits.
+void BitUIntShiftInc(int num_bits, BitUInt* this);
+
+// Shifts bits in the integer to lower values. The low order bits are dropped.
+void BitUIntShiftDec(int num_bits, BitUInt* this);
+
 // Adds the first argument to the second and stores in the second argument.
 void BitUIntAdd(BitUInt* that, BitUInt* this);
 
