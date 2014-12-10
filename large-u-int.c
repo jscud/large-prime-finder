@@ -320,6 +320,32 @@ int LargeUIntByteShiftDec(LargeUInt* this) {
   return lowest_byte;
 }
 
+void LargeUIntMultiByteShiftInc(int num_bytes, LargeUInt* this) {
+  if (this->num_bytes_ + num_bytes > MAX_NUM_LARGE_U_INT_BYTES) {
+    ErrorOut("Unable to byte shift large integer.");
+  }
+  if (this->num_bytes_ == 0) {
+    return;
+  }
+  int i;
+  for (i = this->num_bytes_ - 1; i >= 0; i--) {
+    this->bytes_[i + num_bytes] = this->bytes_[i];
+  }
+  this->num_bytes_ += num_bytes;
+  memset(this->bytes_, 0, num_bytes);
+}
+
+void LargeUIntMultiByteShiftDec(int num_bytes, LargeUInt* this) {
+  if (this->num_bytes_ - num_bytes < 0) {
+    ErrorOut("Unable to decrease shift an integer by this many bytes.");
+  }
+  this->num_bytes_ -= num_bytes;
+  int i;
+  for (i = 0; i < this->num_bytes_; i++) {
+    this->bytes_[i] = this->bytes_[i + num_bytes];
+  }
+}
+
 void LargeUIntAdd(const LargeUInt* that, LargeUInt* this) {
   int carry = 0;
   int value = 0;

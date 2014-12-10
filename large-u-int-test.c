@@ -153,6 +153,26 @@ void TestShift() {
   lowest = LargeUIntByteShiftDec(&a);
   Check(1 == lowest, "Returned low byte should be 1");
   Check(0 == LargeUIntNumBytes(&a), "ShiftDec should zero the integer");
+
+  LargeUIntLoad(5, "0000_", &a);
+  LargeUIntMultiByteShiftInc(3, &a);
+  CheckLargeUInt("0000_", &a,
+                 "Shifting zero multiple bytes should produce zero");
+
+  LargeUIntLoad(11, "0300_AABBCC", &a);
+  LargeUIntMultiByteShiftInc(1, &a);
+  CheckLargeUInt("0400_00AABBCC", &a,
+                 "Multiple byte shift should add low order zero");
+
+  LargeUIntLoad(11, "0300_AABBCC", &a);
+  LargeUIntMultiByteShiftInc(3, &a);
+  CheckLargeUInt("0600_000000AABBCC", &a,
+                 "Multiple byte shift should add three low order zeroes");
+
+  LargeUIntLoad(17, "0600_AABBCCDDEEFF", &a);
+  LargeUIntMultiByteShiftDec(3, &a);
+  CheckLargeUInt("0300_DDEEFF", &a,
+                 "Multiple byte shift should remove three low order bytes");
 }
 
 void TestAddAndIncrement() {

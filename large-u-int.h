@@ -115,6 +115,15 @@ void LargeUIntByteShiftInc(LargeUInt* this);
 // lower position. The lowest order byte is removed and its value returned. 
 int LargeUIntByteShiftDec(LargeUInt* this);
 
+// Adds zero bytes at the low order end of the integer and shifts
+// existing bytes up. Each byte shifted is equivalent to multiplying by a
+// power of 256.
+void LargeUIntMultiByteShiftInc(int num_bytes, LargeUInt* this);
+
+// Reduces the number of bytes in the integer by shifting all bytes into a
+// lower position. The low order bytes are removed. 
+void LargeUIntMultiByteShiftDec(int num_bytes, LargeUInt* this);
+
 // Adds the first argument into the second argument. The value of the second
 // argument is set to the sum of this and that.
 void LargeUIntAdd(const LargeUInt* that, LargeUInt* this);
