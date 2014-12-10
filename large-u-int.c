@@ -516,9 +516,7 @@ void LargeUIntDivide(const LargeUInt* numerator, const LargeUInt* denominator,
     LargeUIntClone(denominator, &repeated_divisor);
 
     // Add the number of subtractions at the correct byte in the quotient.
-    for (i = 0; i < divisor_shifts; i++) {
-      LargeUIntByteShiftInc(&quotient_segment);
-    }
+    LargeUIntMultiByteShiftInc(divisor_shifts, &quotient_segment);
     LargeUIntAdd(&quotient_segment, quotient);
   }
 
