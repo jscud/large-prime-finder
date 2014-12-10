@@ -487,6 +487,7 @@ void LargeUIntDivide(const LargeUInt* numerator, const LargeUInt* denominator,
     return;
   }
 
+  // The remainder starts out with the full value of the numerator.
   LargeUIntClone(numerator, remainder);
 
   LargeUInt repeated_divisor;
@@ -498,21 +499,28 @@ void LargeUIntDivide(const LargeUInt* numerator, const LargeUInt* denominator,
 
   while (LargeUIntLessThanOrEqual(denominator, remainder)) {
     divisor_shifts = 0;
-    while (remainder->num_bytes_ > repeated_divisor.num_bytes_) {
-      divisor_shifts++;
-      LargeUIntByteShiftInc(&repeated_divisor);
-      if (LargeUIntLessThan(remainder, &repeated_divisor)) {
-        divisor_shifts--;
-        LargeUIntByteShiftDec(&repeated_divisor);
-        break;
-      }
+    // We byte shift the divisor until it has the same number of bytes as
+    // the amount that we still have left from the numerator.
+    divisor_shifts = remainder->num_bytes_ - repeated_divisor.num_bytes_;
+    LargeUIntMultiByteShiftInc(divisor_shifts, &repeated_divisor);
+    // If using the same number of bytes means that we have multiplied the
+    // divisor too many times, backtrack on one of the shifts.
+    if (LargeUIntLessThan(remainder, &repeated_divisor)) {
+      divisor_shifts--;
+      LargeUIntByteShiftDec(&repeated_divisor);
     }
+    // We translate the number of byte shifts performed into the number that
+    // we have multiplied the divisor by, to store in the quotient.
     quotient_segment.num_bytes_ = 1;
     quotient_segment.bytes_[0] = 0;
+    // Subtract the multiplied divisor into what is left of the numerator as
+    // many times as is possible while having a remainder left over.
     while (LargeUIntLessThanOrEqual(&repeated_divisor, remainder)) {
       LargeUIntSub(&repeated_divisor, remainder);
       LargeUIntIncrement(&quotient_segment);
     }
+    // Reset the divisor to determine the next round of multiplications that
+    // can fit in the remainder left from this round.
     LargeUIntClone(denominator, &repeated_divisor);
 
     // Add the number of subtractions at the correct byte in the quotient.
