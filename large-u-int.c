@@ -544,8 +544,9 @@ void LargeUIntMod(const LargeUInt* numerator, const LargeUInt* divisor,
   LargeUInt repeated_divisor;
   LargeUIntClone(divisor, &repeated_divisor);
   while (LargeUIntLessThanOrEqual(divisor, remainder)) {
-    while (remainder->num_bytes_ - 1 > repeated_divisor.num_bytes_) {
-      LargeUIntByteShiftInc(&repeated_divisor);
+    int bytes_diff = remainder->num_bytes_ - repeated_divisor.num_bytes_ - 1;
+    if (bytes_diff >= 1) {
+      LargeUIntMultiByteShiftInc(bytes_diff, &repeated_divisor);
     }
     while (LargeUIntLessThanOrEqual(&repeated_divisor, remainder)) {
       LargeUIntSub(&repeated_divisor, remainder);
