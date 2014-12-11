@@ -62,9 +62,8 @@ void FindNearbyPrime(BitUInt* candidate) {
   divisor.num_bits = 2;
   divisor.bits[0] = 1;
   divisor.bits[1] = 1;
-  BitUInt ignored;
   while (BitUIntCompare(&divisor, &max_divisor) >= 0) {
-    BitUIntDiv(candidate, &divisor, &ignored, &remainder);
+    BitUIntMod(candidate, &divisor, &remainder);
     if (remainder.num_bits == 0) {
       // Add two to the candidate to see if the next odd number is prime.
       BitUIntInc(candidate);

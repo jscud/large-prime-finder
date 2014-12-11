@@ -291,6 +291,44 @@ void TestDivide() {
   CheckBitUInt("0101", &r, "1777 divided by 93 should have a remainder of 10");
 }
 
+void TestMod() {
+  BitUInt n, d, r;
+ 
+  char* n_str = "101";
+  char* d_str = "1";
+  BitUIntLoad(strlen(n_str), n_str, &n);
+  BitUIntLoad(strlen(d_str), d_str, &d);
+  BitUIntMod(&n, &d, &r);
+  Check(0 == r.num_bits, "5 mod 1 should give a 0 remainder");
+
+  d_str = "01";
+  BitUIntLoad(strlen(d_str), d_str, &d);
+  BitUIntMod(&n, &d, &r);
+  CheckBitUInt("1", &r, "5 mod 2 should have a remainder of 1");
+
+  d_str = "11";
+  BitUIntLoad(strlen(d_str), d_str, &d);
+  BitUIntMod(&n, &d, &r);
+  CheckBitUInt("01", &r, "5 mod 3 should have a remainder of 2");
+
+  d_str = "011";
+  BitUIntLoad(strlen(d_str), d_str, &d);
+  BitUIntMod(&n, &d, &r);
+  CheckBitUInt("101", &r, "5 mod 6 should have a remainder of 5");
+
+  d_str = "101";
+  BitUIntLoad(strlen(d_str), d_str, &d);
+  BitUIntMod(&n, &d, &r);
+  Check(0 == r.num_bits, "5 mod 5 should have a remainder of 0");
+
+  n_str = "10001111011";
+  d_str = "1011101";
+  BitUIntLoad(strlen(n_str), n_str, &n);
+  BitUIntLoad(strlen(d_str), d_str, &d);
+  BitUIntMod(&n, &d, &r);
+  CheckBitUInt("0101", &r, "1777 mod 93 should have a remainder of 10");
+}
+
 void TestBase10Store() {
   char dec_str[9];
   BitUInt a;
@@ -369,6 +407,7 @@ int main() {
   TestCompare();
   TestMultiply();
   TestDivide();
+  TestMod();
   TestBase10Store();
   TestApproximateSquareRoot();
   printf("All tests passed\n");

@@ -94,6 +94,10 @@ void BitUIntMul(const BitUInt* that, BitUInt* this);
 void BitUIntDiv(const BitUInt* numerator, const BitUInt* denominator,
                 BitUInt* quotient, BitUInt* remainder);
 
+// Divides the numerator by the denominator storing just the remainder.
+void BitUIntMod(const BitUInt* numerator, const BitUInt* denominator,
+                BitUInt* remainder);
+
 // Finds an integer that is close to the square root of the first argument
 // without being less than the actual square root. Intended for a rough
 // overestimate of the square root.

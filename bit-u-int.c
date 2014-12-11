@@ -276,6 +276,29 @@ void BitUIntDiv(const BitUInt* numerator, const BitUInt* denominator,
   BitUIntTrim(quotient); 
 }
 
+void BitUIntMod(const BitUInt* numerator, const BitUInt* denominator,
+                BitUInt* remainder) {
+  assert(denominator->num_bits > 0);
+  BitUIntClone(numerator, remainder);
+  if (BitUIntLessThan(numerator, denominator)) {
+    return;
+  }
+
+  BitUInt multiplied_denominator;
+  BitUIntClone(denominator, &multiplied_denominator);
+  int num_shifts;
+  while (BitUIntLessThanOrEqual(denominator, remainder)) {
+    num_shifts = remainder->num_bits - multiplied_denominator.num_bits;
+    BitUIntShiftInc(num_shifts, &multiplied_denominator);
+    if (BitUIntLessThan(remainder, &multiplied_denominator)) {
+      num_shifts--;
+      BitUIntHalve(&multiplied_denominator);
+    }
+    BitUIntSub(&multiplied_denominator, remainder);
+    BitUIntClone(denominator, &multiplied_denominator);
+  }
+}
+
 void BitUIntApproximateSquareRoot(const BitUInt* this, BitUInt* root) {
   BitUInt two;
   two.num_bits = 2;
