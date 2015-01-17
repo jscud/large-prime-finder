@@ -44,6 +44,9 @@ next-prime-finder-bits.o: next-prime-finder-bits.c bit-u-int.h
 next-prime-finder-gmp: next-prime-finder-gmp.c
 	gcc -o next-prime-finder-gmp -O3 next-prime-finder-gmp.c -lgmp -lm
 
+probable-random-prime-finder: probable-random-prime-finder.c
+	gcc -o probable-random-prime-finder -O3 probable-random-prime-finder.c -lgmp -lm
+
 # BitUInt rules.
 bit-u-int-test: bit-u-int.o bit-u-int-test.o
 	gcc -O3 bit-u-int.o bit-u-int-test.o -o bit-u-int-test
@@ -56,4 +59,4 @@ bit-u-int.o: bit-u-int.c bit-u-int.h
 
 
 clean:
-	rm -f *.o large-u-int-test resumable-prime-finder large-u-int-resumable-prime-finder random-prime-finder next-prime-finder bit-u-int-test next-prime-finder-bits next-prime-finder-gmp
+	rm -f *.o large-u-int-test resumable-prime-finder large-u-int-resumable-prime-finder random-prime-finder next-prime-finder bit-u-int-test next-prime-finder-bits next-prime-finder-gmp probable-random-prime-finder
