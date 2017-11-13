@@ -17,6 +17,7 @@ Upon start, the resumable prime finder will start looking for prime numbers
 larger than the number at the end of the primes file.
 
 Try it right now in a Cloud Shell virtual machine:
+
 <a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/jscud/large-prime-finder&page=editor&open_in_editor=README.md">
 <img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png">
 </a>
