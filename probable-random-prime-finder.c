@@ -41,7 +41,7 @@ void FillCandidateRamdomly(mpz_t candidate, int num_digits) {
 // probable prime check is complete. The timeout is used just during the spot
 // check trial divison.
 int IsPrime(mpz_t candidate, int timeout) {
-  int candidate_status = mpz_probab_prime_p(candidate, 10000);
+  int candidate_status = mpz_probab_prime_p(candidate, 100);
   if (candidate_status == 1) {
     printf("Starting prime verification (%i minutes)\n", timeout);
     mpz_t remainder;
