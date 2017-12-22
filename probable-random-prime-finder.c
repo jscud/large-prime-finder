@@ -26,11 +26,19 @@
 #include <time.h>
 #include <gmp.h>
 
+char CANDIDATE_POSSIBLE_MOST_SIGNIFICANT_DIGIT[] = "123456789";
+
+char CANDIDATE_POSSIBLE_LEAST_SIGNIFICANT_DIGIT[] = "1379";
+
 void FillCandidateRamdomly(mpz_t candidate, int num_digits) {
   char buffer[num_digits + 1];
-  for (int i = 0; i < num_digits; i++) {
+  buffer[0] = CANDIDATE_POSSIBLE_MOST_SIGNIFICANT_DIGIT[rand() % 9];
+  for (int i = 1; i < num_digits - 1; i++) {
     buffer[i] = '0' + (rand() % 10);
   }
+  // The last digit of a prime number is one of 1, 3, 7, or 9 in base 10.
+  buffer[num_digits - 1] = 
+      CANDIDATE_POSSIBLE_LEAST_SIGNIFICANT_DIGIT[(rand() % 4)];
   buffer[num_digits] = '\0';
   mpz_init_set_str(candidate, buffer, 10);
 }
