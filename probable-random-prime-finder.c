@@ -30,6 +30,22 @@ char CANDIDATE_POSSIBLE_MOST_SIGNIFICANT_DIGIT[] = "123456789";
 
 char CANDIDATE_POSSIBLE_LEAST_SIGNIFICANT_DIGIT[] = "1379";
 
+int FIRST_FEW_PRIMES[] = {3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47,
+    53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131,
+    137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211,
+    223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293,
+    307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389,
+    397, 401, 409, 419, 421, 431, 433, 439, 443, 449, 457, 461, 463, 467, 479,
+    487, 491, 499, 503, 509, 521, 523, 541, 547, 557, 563, 569, 571, 577, 587,
+    593, 599, 601, 607, 613, 617, 619, 631, 641, 643, 647, 653, 659, 661, 673,
+    677, 683, 691, 701, 709, 719, 727, 733, 739, 743, 751, 757, 761, 769, 773,
+    787, 797, 809, 811, 821, 823, 827, 829, 839, 853, 857, 859, 863, 877, 881,
+    883, 887, 907, 911, 919, 929, 937, 941, 947, 953, 967, 971, 977, 983, 991,
+    997, 1009, 1013, 1019};
+
+int FIRST_FEW_PRIMES_COUNT =
+    sizeof(FIRST_FEW_PRIMES) / sizeof(FIRST_FEW_PRIMES[0]);
+
 void FillCandidateRamdomly(mpz_t candidate, int num_digits) {
   char buffer[num_digits + 1];
   buffer[0] = CANDIDATE_POSSIBLE_MOST_SIGNIFICANT_DIGIT[rand() % 9];
@@ -63,7 +79,20 @@ int IsPrime(mpz_t candidate, int timeout) {
     mpz_init(divisor);
     time(&start_time);
 
-    mpz_set_ui(divisor, 3);
+    // Start by checking the first few primes which should be less than the
+    // largest possible divisor for a less than sever digit number.
+    for (int i = 0; i < FIRST_FEW_PRIMES_COUNT; i++) {
+      mpz_set_ui(divisor, FIRST_FEW_PRIMES[i]);
+      mpz_mod(remainder, candidate, divisor);
+      if (mpz_size(remainder) == 0) {
+        // The candidate is not prime.
+        return 0;
+      }
+    }
+
+    // Check divisors sequentially starting with the next prime after the last
+    // prime in the FIRST_FEW_PRIMES array.
+    mpz_set_ui(divisor, 1021);
     mpz_root(limit, candidate, 2);
     while (mpz_cmp(limit, divisor) > 0) {
       mpz_mod(remainder, candidate, divisor);
