@@ -1,5 +1,7 @@
 # Getting Started with the Large Prime Finder
 
+<walkthrough-alt>[![Open in Cloud Shell](//gstatic.com/cloudssh/images/open-btn.svg)](https://console.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https://github.com/jscud/large-prime-finder&tutorial=tutorial.md)</walkthrough-alt>
+
 ## Welcome
 
 The Large Prime Finder includes programs that are capable of finding prime
