@@ -1,6 +1,6 @@
 # Getting Started with the Large Prime Finder
 
-<walkthrough-alt>[![Open in Cloud Shell](//gstatic.com/cloudssh/images/open-btn.svg)](https://console.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https://github.com/jscud/large-prime-finder&tutorial=tutorial.md)</walkthrough-alt>
+<walkthrough-alt>[![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.svg)](https://console.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https://github.com/jscud/large-prime-finder&tutorial=tutorial.md)</walkthrough-alt>
 
 ## Welcome
 
