@@ -152,6 +152,15 @@ Starting prime verification (2 minutes)
 Prime:
 14490602325933967
 ```
+
+Note that if you'd rather ask for a prime number that is a certain number of
+bits long, instead of specifying number of digits, you can specify the number
+of bits by putting a letter b in front of the number. For example, this will
+generate a 32-bit prime number:
+
+```bash
+./probable-random-prime-finder b32 2
+```
     
 ## Probable Prime Finder -  Finding a large number that is probably prime
 

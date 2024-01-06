@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Google Inc. All rights reserved.
+ * Copyright 2024 Google Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ int FIRST_FEW_PRIMES[] = {3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47,
 int FIRST_FEW_PRIMES_COUNT =
     sizeof(FIRST_FEW_PRIMES) / sizeof(FIRST_FEW_PRIMES[0]);
 
-void FillCandidateRamdomly(mpz_t candidate, int num_digits) {
+void FillCandidateRandomly(mpz_t candidate, int num_digits) {
   char buffer[num_digits + 1];
   buffer[0] = CANDIDATE_POSSIBLE_MOST_SIGNIFICANT_DIGIT[rand() % 9];
   for (int i = 1; i < num_digits - 1; i++) {
@@ -57,6 +57,18 @@ void FillCandidateRamdomly(mpz_t candidate, int num_digits) {
       CANDIDATE_POSSIBLE_LEAST_SIGNIFICANT_DIGIT[(rand() % 4)];
   buffer[num_digits] = '\0';
   mpz_init_set_str(candidate, buffer, 10);
+}
+
+void FillCandidateRandomlyByBits(mpz_t candidate, int num_bits) {
+  char buffer[num_bits + 1];
+  buffer[0] = '1';
+  for (int i = 1; i < num_bits - 1; i++) {
+    buffer[i] = '0' + (rand() & 1);
+  }
+  // Final digit must always be 1 since all primes are odd.
+  buffer[num_bits - 1] = '1';
+  buffer[num_bits] = '\0';
+  mpz_init_set_str(candidate, buffer, 2);
 }
 
 // Reports whether a number is certainly not prime (0), certainly prime (2) or
@@ -156,10 +168,18 @@ int main(int argc, char *argv[]) {
   }
   srand(time(0));
 
-  int num_digits = atoi(argv[1]);
-
   mpz_t candidate;
-  FillCandidateRamdomly(candidate, num_digits);
+  // Using a number like b32 mean a 32 bit prime instead of 32 digits.
+  if (argv[1][0] == 'b' || argv[1][0] == 'B') {
+    // Read the number of bits skipping the leading b.
+    int num_bits = atoi(argv[1] + sizeof(char));
+    printf("Number of bits: %i\n", num_bits);
+    FillCandidateRandomlyByBits(candidate, num_bits);
+  } else {
+    int num_digits = atoi(argv[1]);
+    FillCandidateRandomly(candidate, num_digits);
+  }
+
   printf("Starting.\n");
   FindNearbyPrime(candidate, atoi(argv[2]));
   return 0;
